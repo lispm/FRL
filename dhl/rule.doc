@@ -1,0 +1,657 @@
+From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 13:05:09 1988
+Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
+	id AA07816; Thu, 2 Jun 88 13:05:08 JST
+Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
+	id AA03706; Thu, 2 Jun 88 12:43:55 JST
+Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
+	id AA07927; Thu, 2 Jun 88 12:44:00+0900
+Date: Thu, 2 Jun 88 12:44:00+0900
+From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
+Return-Path: <z30083@tansei.cc.u-tokyo.junet>
+Message-Id: <8806020344.AA07927@tansei.cc.u-tokyo.junet>
+To: ida@aoyama.junet
+Subject: dhl.rule.doc
+Status: RO
+
+>From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 20:17:54 1986
+Date: Wed, 26 Feb 86 14:39:20 PST
+From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
+Message-Id: <8602262239.AA08148@franz>
+To: ida@csnet-relay.arpa
+Subject: ReadMe
+Status: R
+
+File : dhl/rule.doc
+
+			Description of the rule system.
+
+Rules are frames, and are the values of the slot rule of a rule-domain frame,
+	which is a domain frame. (see dhl/domain.doc)
+
+Rule domain frames describe how the set of rules in the given
+	domain are interpreted.
+
+	A rule domain frame is of the form:
+
+(rule-domain name ako domain (goal-arguments)
+  (slota value)
+  (slotb value)
+  ...)
+
+Examples:
+
+(rule-domain toh rule-domain nil (:goal)
+  (getrule poprule)
+  (putrule pushrule)
+  (gather possiblerules)
+  (applyrule toh-applyrule)
+  (entertrace print-rule-trace)
+  (exittrace print-rule-exit-trace))
+
+or of the form: 
+
+(rule-domain match rule-domain domain (:match1 :match2 :bindings)
+  (getrule poprule)
+  (putrule pushrule)
+  (gather possiblerules)
+  (applyrule basicapplyrule)
+  (entertrace print-rule-trace)
+  (exittrace print-rule-exit-trace))
+
+These domains as frames look like:
+
+(fassert match
+         (ako ($value (rule-domain)))
+	 (domain ($value (domain)))
+         (getrule ($value (poprule)))
+         (putrule ($value (pushrule)))
+         (gather ($value (possiblerules)))
+         (applyrule ($value (basicapplyrule)))
+         (entertrace ($value (print-rule-trace)))
+         (exittrace ($value (print-rule-exit-trace)))
+         (arguments ($value ((:match1 :match2 :bindings))))
+         (rule ($value (try-recursively) (match-var) (is-equal))))
+
+(fassert toh
+         (ako ($value (rule-domain)))
+         (getrule ($value (poprule)))
+         (putrule ($value (pushrule)))
+         (gather ($value (possiblerules)))
+         (applyrule ($value (toh-applyrule)))
+         (entertrace ($value (print-rule-trace)))
+         (exittrace ($value (print-rule-exit-trace)))
+         (arguments ($value ((:goal))))
+         (rule
+          ($value (move-disk)
+                  (legal-move)
+                  (move-smaller-disks)
+                  (>)
+                  (cleartop)
+                  (getvalue)
+                  (checkvalue)
+                  (otherpeg))))
+
+
+Slots of a rule domain:
+
+The many slots of a rule domain specify how that domain works.
+
+Each slot which is defined should have a functional value, meaning,
+	its value is the name of a function or a rule-domain which
+	does the appropriate action.  (Note, rule domains are also
+	treated like functions).
+
+The requirements of these functions:
+Note: these functions are called by the system so must be defined,
+	with the arguments as specified below.
+
+Note2: there may currently be only one function at most for each
+	slot, at present.
+
+Form of documentation:
+	slot:				(required or optional)
+	(function arguments-needed).
+		description.
+
+Functions for controlling the rulequeue.
+
+PUTRULE:				(required for rule-domains).
+(putrulefunction rule rulequeue)
+	Adds the rule to the rulequeue.
+	Rules are handed to this function in the following
+	lisp list structure :  (rule goal rule-level)
+	Where goal is a list of the goal arguments to the rule domain.
+
+	/* insert example here */
+
+GETRULE:				(required for rule-domains).
+(getrulefunction rulequeue)
+	takes a rule off the rule queue, and should return a dotted pair,
+	where the car is the next rule, and the cdr is the rulequeue after
+	the rule has been taken off the queue.
+	The rule returned in the car should be of the form :
+		(rule goal rule-level).
+	Where goal is a list of the goal arguments to the rule domain.
+
+GATHER:					(optional)
+(gatherfunction domain goal-arguments)
+	given a goal or a specification returns an appropriate list
+	of frames for the given domain. Thus this function can be used
+	to narrow the choice of rules tried on a given goal.
+	The default in a rule domain is to return all rules in the
+	rule slot of the domain.
+
+SCOPE:					(optional)
+variable.
+	If this slot does not exist, the default rulequeue creation
+	rules are enforced by the system.
+;;	note about rulequeue - default setting, is a new rulequeue is
+;;	created for each new level, except in the case when a ruledomain
+;;	calls itself, when the old rulequeue is used.
+;;	Using the scope slot of a ruledomain can override these defaults.
+;;
+;;	scope -- close : new rulequeue for a domain when called by itself.
+;;		 open : use previous rulequeue when called by other domains.
+;;
+	Whenever a rule domain calls itself, the same rulequeue is
+	used ( a new one is not created, instead all the new goal-
+		 rule pairs are added to the current rulequeue used
+		 by the calling rulequeue ).
+	If another ruledomain calls a rule domain (not itself), then
+	a new rulequeue is created in the called domain, and it is
+	local to the called domain.
+	In both cases, after returning from a domain, the rulequeue is 
+	restored to its state before the call.
+	To change the methods that the rulequeue is used, you can use
+	the scope slot.
+	If the slot scope has the value open, then when the domain is entered,
+	when called by another domain other than itself,
+	the currently used rulequeue from the calling domain is used.
+	If the slot scope has the value closed, then when the domain is
+	called by itself (say match calling the match domain), a new
+	rulequeue is created.
+
+How To Interpret Rules:
+
+APPLYRULE:				(required for rule-domains).
+(applyrulefunction rule goal-arguments)
+	given a rule and a goal,  this function tell how to apply the
+	rule to the goal, a non-nil return value means the rule succeeded.
+
+
+How to Trace Rules:
+
+ENTERTRACE:				(optional)
+(entertracefunction rule tracelevel goal-arguments)
+	user can trace rules as they are tried on goals.
+
+EXITTRACE:				(optional)
+(exittracefunction rule tracelevel resulting-value)
+	user can trace rules as they finish on goals.
+
+Other features used in rule domains:
+
+NEWGOAL:					(optional)
+(newgoal-function goal-arguments)
+	initial function is executed when a new goal enters the
+	the domain. It can be used to mark a goal so you know you 
+	have tried to prove it before.
+	Only gets called if initialtest (if it exists) fails (returns nil).
+	Note: this function expects a nil return value,
+	This should always returns nil, unless you want to use it to
+	return a value and exit.  Returning non-nil = success.
+	Value is returned right away without trying any goals, and
+	without running the exitsucceed function.
+
+INITIALTEST:					(optional)
+(initialtestfunction goal-arguments)
+	does an initial test on a goal.
+	if non-nil return value, the goal automatically fails.
+	It can be used to test if a goal is marked.
+	undoes mark-happens when a rule applied to the goal succeeds.
+
+SUCCEED:					(optional).
+(succeedfunction goal-arguments result)
+	this function is executed when a goal succeeds in a domain.
+	It can be used to unmark goals.
+	This function can also be used to assert goals.
+	Formally there was an assert slot to do this, but it
+	performed the same semantics as exitsucceed and was joined
+	into this slot.
+	If a non-nil fail is returned, this value is returned from the
+	rule-domain instead of the one which the rules returned.
+	This function is only called once, just before leaving
+	the domain.  In the case where succeedcontinue is set to
+	true, the result is a list of succeeded values.
+
+SUCCEEDCONTINUE:				(optional).
+variable.
+	If set with a non-nil value, then the rule system continues
+	till it runs out of rules and returns a list of all
+	answers. Exitsucceed can override this return-value.
+
+FAIL:						(optional).
+(failfunction goal-arguments)
+	what to do if a goal fails, takes place if you try to prove or
+	achieve a goal, and there are no rules, or all rules are tried
+	and fail with the rulequeue becoming empty.
+
+
+Some simple functions for all the above slots are provided in
+dhl//rule2.l.  The user is free to write functions or descibe
+rule domains for any of the 
+above slots if he keeps to the above mentioned conventions.
+
+
+Rule domains as functions:
+
+To prove something in a given domain, one needs only to call the
+domain as a function and pass the goal as the argument.  (Rule-domains,
+can have more than one argument).
+Rule domains can be used instead of functions to describe how
+something works with rules and frames:
+The arguments passed (goal) are defined in the creation of the domain.
+(see above examples).
+
+Examples:	(for above domains).
+
+(def toh
+  (lambda (:goal)
+    (changedomain 'toh (list :goal))))
+
+(def match
+  (lambda (:match1 :match2 :bindings)
+    (changedomain 'match (list :match1 :match2 :bindings))))
+
+;; note in the case of match, there are 3 arguments to
+;;	make up the goal, but the rules can refer to the variables :match1,
+;;	:match2 and :bindings at any time.
+;;
+;; If there is one goal-argument, then each of the above functions needs
+;; 	only one argument where goal-arguments is specified.
+;;
+;; When there are n goal arguments there should be n arguments for whereever
+;; 	it says goal-arguments in the above specifications.
+;;	One corresponding to each.
+;;
+;; All the sample system supplied functions for the user in the file
+;;	dhl//rule2.l assume there is only one goal argument, but they
+;;	can easily be modified for more.
+;;
+
+For more details and examples see the following files:
+
+rule system itself : 				dhl//rule.l
+auxiliary rule functions for the user : 	dhl//rule2.l
+declaring basic rule frames :			dhl//rule-frames.l
+a simple rule domain for a simple matcher :	dhl//rmatch.l
+a simple example for towers of hanoi :		dhl//tower.l
+a user-tuned up example of towers of hanoi : 	dhl//besttower.l
+
+Note: to compile a file with rules in it, you should include the
+following at the beginging of the file:
+
+(include declar.l)	;; full frl path name is required if not
+			;; compiled in the frl directory.
+
+
+(eval-when (compile)
+  (load 'dhl//rule))	;; same comment as above.
+
+
+If any of the macros in dhl//rule2.l are used, then you should also
+include the following at the begining of the file.
+
+(eval-when (compile)
+  (include 'dhl//rule2))	;; same comment as above.
+
+Other features available:
+
+The user can use the following FRL rule-system variable:
+
+	:rulestack - contains a list of rules being tried,
+		the car is the latest, (none of these have failed yet.
+		(this is not the same as the rulequeue which is not
+		a global system variable, and is user defined and has
+		the queue of rules not tried yet).
+
+	:goalstack - contains a list of goals with respect to the
+		:rulestack. The car is the latest goal requested.
+
+	Note : these variables are maintained across domains.
+		The best advice in using these, is to gather information
+		from them and use them to modify or pick rules from
+		the rulequeue.
+
+
+Tue Aug 11 12:52:01 PDT 1981
+
+>From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 20:18:13 1986
+Received: by u-tokyo.junet (4.12/4.9J)
+	id AA01570; Fri, 28 Feb 86 20:18:04+0900
+Received: by titan.junet (4.12/3.14)
+	id AA17641; Fri, 28 Feb 86 04:13:09 jst
+Received: by kddlabs.junet (4.12/4.7)
+	id AA03864; Fri, 28 Feb 86 02:03:52 jst
+Received: from csnet-relay.arpa by hplabs.ARPA ; Wed, 26 Feb 86 15:37:37 pst
+Received: from ucbvax.berkeley.edu by CSNET-RELAY.ARPA id a010995;
+          26 Feb 86 18:31 EST
+Received: by ucbvax.berkeley.edu (5.45/1.9)
+	id AA03471; Wed, 26 Feb 86 15:22:09 PST
+Received: by kim.berkeley.edu (5.45/1.8)
+	id AA05697; Wed, 26 Feb 86 15:21:55 PST
+Received: by franz (5.5/3.14)
+	id AA08204; Wed, 26 Feb 86 14:41:27 PST
+Date: Wed, 26 Feb 86 14:41:27 PST
+From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
+Message-Id: <8602262241.AA08204@franz>
+To: ida@csnet-relay.arpa
+Subject: rule.doc
+Status: R
+
+File : dhl/rule.doc
+
+			Description of the rule system.
+
+Rules are frames, and are the values of the slot rule of a rule-domain frame,
+	which is a domain frame. (see dhl/domain.doc)
+
+Rule domain frames describe how the set of rules in the given
+	domain are interpreted.
+
+	A rule domain frame is of the form:
+
+(rule-domain name ako domain (goal-arguments)
+  (slota value)
+  (slotb value)
+  ...)
+
+Examples:
+
+(rule-domain toh rule-domain nil (:goal)
+  (getrule poprule)
+  (putrule pushrule)
+  (gather possiblerules)
+  (applyrule toh-applyrule)
+  (entertrace print-rule-trace)
+  (exittrace print-rule-exit-trace))
+
+or of the form: 
+
+(rule-domain match rule-domain domain (:match1 :match2 :bindings)
+  (getrule poprule)
+  (putrule pushrule)
+  (gather possiblerules)
+  (applyrule basicapplyrule)
+  (entertrace print-rule-trace)
+  (exittrace print-rule-exit-trace))
+
+These domains as frames look like:
+
+(fassert match
+         (ako ($value (rule-domain)))
+	 (domain ($value (domain)))
+         (getrule ($value (poprule)))
+         (putrule ($value (pushrule)))
+         (gather ($value (possiblerules)))
+         (applyrule ($value (basicapplyrule)))
+         (entertrace ($value (print-rule-trace)))
+         (exittrace ($value (print-rule-exit-trace)))
+         (arguments ($value ((:match1 :match2 :bindings))))
+         (rule ($value (try-recursively) (match-var) (is-equal))))
+
+(fassert toh
+         (ako ($value (rule-domain)))
+         (getrule ($value (poprule)))
+         (putrule ($value (pushrule)))
+         (gather ($value (possiblerules)))
+         (applyrule ($value (toh-applyrule)))
+         (entertrace ($value (print-rule-trace)))
+         (exittrace ($value (print-rule-exit-trace)))
+         (arguments ($value ((:goal))))
+         (rule
+          ($value (move-disk)
+                  (legal-move)
+                  (move-smaller-disks)
+                  (>)
+                  (cleartop)
+                  (getvalue)
+                  (checkvalue)
+                  (otherpeg))))
+
+
+Slots of a rule domain:
+
+The many slots of a rule domain specify how that domain works.
+
+Each slot which is defined should have a functional value, meaning,
+	its value is the name of a function or a rule-domain which
+	does the appropriate action.  (Note, rule domains are also
+	treated like functions).
+
+The requirements of these functions:
+Note: these functions are called by the system so must be defined,
+	with the arguments as specified below.
+
+Note2: there may currently be only one function at most for each
+	slot, at present.
+
+Form of documentation:
+	slot:				(required or optional)
+	(function arguments-needed).
+		description.
+
+Functions for controlling the rulequeue.
+
+PUTRULE:				(required for rule-domains).
+(putrulefunction rule rulequeue)
+	Adds the rule to the rulequeue.
+	Rules are handed to this function in the following
+	lisp list structure :  (rule goal rule-level)
+	Where goal is a list of the goal arguments to the rule domain.
+
+	/* insert example here */
+
+GETRULE:				(required for rule-domains).
+(getrulefunction rulequeue)
+	takes a rule off the rule queue, and should return a dotted pair,
+	where the car is the next rule, and the cdr is the rulequeue after
+	the rule has been taken off the queue.
+	The rule returned in the car should be of the form :
+		(rule goal rule-level).
+	Where goal is a list of the goal arguments to the rule domain.
+
+GATHER:					(optional)
+(gatherfunction domain goal-arguments)
+	given a goal or a specification returns an appropriate list
+	of frames for the given domain. Thus this function can be used
+	to narrow the choice of rules tried on a given goal.
+	The default in a rule domain is to return all rules in the
+	rule slot of the domain.
+
+SCOPE:					(optional)
+variable.
+	If this slot does not exist, the default rulequeue creation
+	rules are enforced by the system.
+;;	note about rulequeue - default setting, is a new rulequeue is
+;;	created for each new level, except in the case when a ruledomain
+;;	calls itself, when the old rulequeue is used.
+;;	Using the scope slot of a ruledomain can override these defaults.
+;;
+;;	scope -- close : new rulequeue for a domain when called by itself.
+;;		 open : use previous rulequeue when called by other domains.
+;;
+	Whenever a rule domain calls itself, the same rulequeue is
+	used ( a new one is not created, instead all the new goal-
+		 rule pairs are added to the current rulequeue used
+		 by the calling rulequeue ).
+	If another ruledomain calls a rule domain (not itself), then
+	a new rulequeue is created in the called domain, and it is
+	local to the called domain.
+	In both cases, after returning from a domain, the rulequeue is 
+	restored to its state before the call.
+	To change the methods that the rulequeue is used, you can use
+	the scope slot.
+	If the slot scope has the value open, then when the domain is entered,
+	when called by another domain other than itself,
+	the currently used rulequeue from the calling domain is used.
+	If the slot scope has the value closed, then when the domain is
+	called by itself (say match calling the match domain), a new
+	rulequeue is created.
+
+How To Interpret Rules:
+
+APPLYRULE:				(required for rule-domains).
+(applyrulefunction rule goal-arguments)
+	given a rule and a goal,  this function tell how to apply the
+	rule to the goal, a non-nil return value means the rule succeeded.
+
+
+How to Trace Rules:
+
+ENTERTRACE:				(optional)
+(entertracefunction rule tracelevel goal-arguments)
+	user can trace rules as they are tried on goals.
+
+EXITTRACE:				(optional)
+(exittracefunction rule tracelevel resulting-value)
+	user can trace rules as they finish on goals.
+
+Other features used in rule domains:
+
+NEWGOAL:					(optional)
+(newgoal-function goal-arguments)
+	initial function is executed when a new goal enters the
+	the domain. It can be used to mark a goal so you know you 
+	have tried to prove it before.
+	Only gets called if initialtest (if it exists) fails (returns nil).
+	Note: this function expects a nil return value,
+	This should always returns nil, unless you want to use it to
+	return a value and exit.  Returning non-nil = success.
+	Value is returned right away without trying any goals, and
+	without running the exitsucceed function.
+
+INITIALTEST:					(optional)
+(initialtestfunction goal-arguments)
+	does an initial test on a goal.
+	if non-nil return value, the goal automatically fails.
+	It can be used to test if a goal is marked.
+	undoes mark-happens when a rule applied to the goal succeeds.
+
+SUCCEED:					(optional).
+(succeedfunction goal-arguments result)
+	this function is executed when a goal succeeds in a domain.
+	It can be used to unmark goals.
+	This function can also be used to assert goals.
+	Formally there was an assert slot to do this, but it
+	performed the same semantics as exitsucceed and was joined
+	into this slot.
+	If a non-nil fail is returned, this value is returned from the
+	rule-domain instead of the one which the rules returned.
+	This function is only called once, just before leaving
+	the domain.  In the case where succeedcontinue is set to
+	true, the result is a list of succeeded values.
+
+SUCCEEDCONTINUE:				(optional).
+variable.
+	If set with a non-nil value, then the rule system continues
+	till it runs out of rules and returns a list of all
+	answers. Exitsucceed can override this return-value.
+
+FAIL:						(optional).
+(failfunction goal-arguments)
+	what to do if a goal fails, takes place if you try to prove or
+	achieve a goal, and there are no rules, or all rules are tried
+	and fail with the rulequeue becoming empty.
+
+
+Some simple functions for all the above slots are provided in
+dhl//rule2.l.  The user is free to write functions or descibe
+rule domains for any of the 
+above slots if he keeps to the above mentioned conventions.
+
+
+Rule domains as functions:
+
+To prove something in a given domain, one needs only to call the
+domain as a function and pass the goal as the argument.  (Rule-domains,
+can have more than one argument).
+Rule domains can be used instead of functions to describe how
+something works with rules and frames:
+The arguments passed (goal) are defined in the creation of the domain.
+(see above examples).
+
+Examples:	(for above domains).
+
+(def toh
+  (lambda (:goal)
+    (changedomain 'toh (list :goal))))
+
+(def match
+  (lambda (:match1 :match2 :bindings)
+    (changedomain 'match (list :match1 :match2 :bindings))))
+
+;; note in the case of match, there are 3 arguments to
+;;	make up the goal, but the rules can refer to the variables :match1,
+;;	:match2 and :bindings at any time.
+;;
+;; If there is one goal-argument, then each of the above functions needs
+;; 	only one argument where goal-arguments is specified.
+;;
+;; When there are n goal arguments there should be n arguments for whereever
+;; 	it says goal-arguments in the above specifications.
+;;	One corresponding to each.
+;;
+;; All the sample system supplied functions for the user in the file
+;;	dhl//rule2.l assume there is only one goal argument, but they
+;;	can easily be modified for more.
+;;
+
+For more details and examples see the following files:
+
+rule system itself : 				dhl//rule.l
+auxiliary rule functions for the user : 	dhl//rule2.l
+declaring basic rule frames :			dhl//rule-frames.l
+a simple rule domain for a simple matcher :	dhl//rmatch.l
+a simple example for towers of hanoi :		dhl//tower.l
+a user-tuned up example of towers of hanoi : 	dhl//besttower.l
+
+Note: to compile a file with rules in it, you should include the
+following at the beginging of the file:
+
+(include declar.l)	;; full frl path name is required if not
+			;; compiled in the frl directory.
+
+
+(eval-when (compile)
+  (load 'dhl//rule))	;; same comment as above.
+
+
+If any of the macros in dhl//rule2.l are used, then you should also
+include the following at the begining of the file.
+
+(eval-when (compile)
+  (include 'dhl//rule2))	;; same comment as above.
+
+Other features available:
+
+The user can use the following FRL rule-system variable:
+
+	:rulestack - contains a list of rules being tried,
+		the car is the latest, (none of these have failed yet.
+		(this is not the same as the rulequeue which is not
+		a global system variable, and is user defined and has
+		the queue of rules not tried yet).
+
+	:goalstack - contains a list of goals with respect to the
+		:rulestack. The car is the latest goal requested.
+
+	Note : these variables are maintained across domains.
+		The best advice in using these, is to gather information
+		from them and use them to modify or pick rules from
+		the rulequeue.
+
+
+Tue Aug 11 12:52:01 PDT 1981
+
+

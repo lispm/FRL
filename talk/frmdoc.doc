@@ -1,0 +1,498 @@
+From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:05:08 1988
+Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
+	id AA08157; Thu, 2 Jun 88 14:05:07 JST
+Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
+	id AA04369; Thu, 2 Jun 88 13:31:15 JST
+Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
+	id AA08073; Thu, 2 Jun 88 12:45:17+0900
+Date: Thu, 2 Jun 88 12:45:17+0900
+From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
+Return-Path: <z30083>
+Message-Id: <8806020345.AA08073@tansei.cc.u-tokyo.junet>
+To: ida@aoyama.junet
+Subject: frmdoc.doc
+Status: RO
+
+>From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Sat Mar  1 06:16:31 1986
+Received: by u-tokyo.junet (4.12/4.9J)
+	id AA06508; Sat, 1 Mar 86 06:16:21+0900
+Received: by titan.junet (4.12/3.14)
+	id AA17886; Fri, 28 Feb 86 04:54:45 jst
+Received: by kddlabs.junet (4.12/4.7)
+	id AA04016; Fri, 28 Feb 86 02:21:46 jst
+Received: from csnet-relay.arpa by hplabs.ARPA ; Wed, 26 Feb 86 16:42:52 pst
+Received: from ucbvax.berkeley.edu by CSNET-RELAY.ARPA id a011347;
+          26 Feb 86 19:08 EST
+Received: by ucbvax.berkeley.edu (5.45/1.9)
+	id AA03513; Wed, 26 Feb 86 15:24:25 PST
+Received: by kim.berkeley.edu (5.45/1.8)
+	id AA05765; Wed, 26 Feb 86 15:24:02 PST
+Received: by franz (5.5/3.14)
+	id AA08402; Wed, 26 Feb 86 15:05:29 PST
+Date: Wed, 26 Feb 86 15:05:29 PST
+From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
+Message-Id: <8602262305.AA08402@franz>
+To: ida@csnet-relay.arpa
+Subject: frmdoc.doc
+Status: R
+
+                         The FRAMISH Language
+
+
+                            Basic FRAMISH
+
+( ... )
+	is a grouping operator.  The expression it surrounds will always be
+	seen as an argument by the preceding operator.  It has a left binding
+	power of zero.
+
+"word"
+	quotes tokens.  "IF" is interpreted as the token IF, regardless of any
+	denotations it may have.
+
+A,B,...,Z
+	is equivalent to (LIST A B ... Z).
+
+F(A, B, C)
+	is equivalent to (F A B C) in Lisp.  This use of parentheses is
+	distinquished by its occurrence as an infix operator.
+
+% ... comment ... %
+	is ignored as a comment.
+
+!S-expression
+	introduces an S-expression read using normal Lisp syntax rather than
+	Framish syntax.
+
+                             Basic RULISH
+
+
+IF a THEN b {ELSE c} {ANDTHEN d}
+	becomes (COND ( A  B ) ( T  C )) D.
+
+expression1; expression2; ...
+	is equivalent to (PROGN expression1 expression2 ...).
+
+x is GREATER than y
+x is LESS than y
+x is EQUAL to y
+	are numerical comparisons; >, < and = respectively.
+
+AND
+OR
+NOT
+	are logical connectives.  NOT may also be used as prefix.  E.g., "not
+	A not equal to B" = (NOT (NOT (= A B)))
+
+SUM, TOTAL
+DIFFERENCE
+PRODUCT
+QUOTIENT
+	are arithmetic operators.  Either "the sum of x and y" or "the sum of
+	a,b,..." are recognized.
+
+
+:, THAT, EXPRESSION
+	introduces a new expression, like "(".  No right delimiter is used
+	however.  The resulting expression is returned quoted.
+
+
+TEST
+	sets the "if-flag" for the next expression, as does the IF portion of
+	of the If-Then-Else phrase.  It is used by the token "IS" to
+	distinguish assignment statements from comparisons.
+
+                           Extended FRAMISH
+
+{...} means optional and may be omitted.  (...) denotes a forced choice.
+
+
+                            The Frame Path
+
+A complete frame path consists of a Frame, Slot and Facet.  The
+following expressions specify a path or subpath.
+
+the X frame
+the Y slot
+the Z facet
+the Z {facet} FOR the Y {slot}
+the Y {slot} OF the X {frame}
+X's Y {slot}
+the Z {facet} FOR the Y {slot} OF the X {frame}
+
+If in parsing a Framish expression an incomplete path is indicated, it
+is filled out using values from a default path.  The default path
+initially is :FRAME, :SLOT, $VALUE.
+	
+CONSIDER <path>
+	changes the default path by merging the specified path with the
+	old one.
+
+RECONSIDER
+	resets the default path to its initial state.
+
+IT, THEM, THEY
+	can all be used to refer the current default path.
+
+In path specifications, the following words and their plural forms are
+recognized as facets:  Value, Default, Requirement, Preference,
+If-Needed, If-Added, If-Removed, Say, Discuss.  The variable
+*FACET-NAME-CONVERSIONS* holds these translations.
+
+The important special variables which compose the frame environment
+can be included in a frame path.
+
+CURRENT (frame, slot, facet, value, values)
+	becomes :FRAME, :SLOT :FACET, :VALUE or :VALUES respectively.
+
+ME, MYSELF
+	refer to the value of :USER-FRAME.
+
+MY X {slot}
+	refers to the X slot of :USER-FRAME.
+
+(ITS, HER, HIS, THEIR) X {slot}
+	refer implicitly to the current path frame.
+
+                        Frame Access Commands
+
+GET {each, all} <path>.
+
+SAY {each, all} <path>.
+
+USE {one} <path>.
+USE (each, all) <path>.
+
+REMOVE X {from} <path>.
+REMOVE {each, all} <path>.
+
+PUT X {in, as} <path>.
+
+REPLACE {all} <path> {by, with} X.
+
+CREATE a {new} X {called Y}.
+
+                          Frames Assertions
+
+<path> is X.		; Uses FPUT.  == "Put X in <path>"
+
+<path> are X,Y,....	; Uses FPUT.
+
+IF <path> is X THEN ....				; Uses MEMBER
+
+IF <path> are X,Y,... THEN ....				; Uses MEMBER
+
+
+"Is" and "are" can also be used without confusion to introduce a
+comparison (like LESS or GREATER) if they are so marked.  Declare them
+using the function COMPARATIVE-WITH-IS.
+
+			       QUERIAN
+
+________________________________________________________________
+
+The following commands supply capabilities designed to provide a
+natural-style query language interface.
+
+Quantification
+
+ALL	universal quantifier
+ANY	existential quantifier
+
+<path> WHERE predicate { ,predicate,predicate,... }
+	Each value of the facet described by the path is made the current
+	path frame in its turn.  Those values which satisfy all the
+	predicates are made available for selection via quantification.
+	If no quantifier is present, quantification defaults to ANY; thus,
+	THE <path> WHERE predicate == ANY <path> WHERE predicate == any
+	single value in the current path facet satisfying all predicates.
+
+	Synonyms are WHICH, WITH.
+
+<path> HAS predicate { ,predicate,predicate,... }
+	The predicate version of WHERE.  Evaluates to true if and only if
+	the identically quantified expression <path> WHERE predicate
+	{ ,predicate,... } is non-NIL. Remarks about quantification above
+	also apply here.
+
+	Synonym is HAVE.
+
+Examples:
+
+"all site of exxon where its location is texas" returns a list of all sites
+	of EXXON in Texas.
+
+"if any site of shell has its location is (all site of standard where its
+	location is california),its bought is greater than 0 then
+	shout(|Shell|,is,competing,with,|Standard|,in,|California|)" will
+	print the message "Shell is competing with Standard in California"
+	if there is a site of Shell which has bought oil, and is located
+	in the same city as a site of Standard in California.
+
+Display function
+
+DISPLAY <path or partial path> { AS (frame,slot) } { USING function }
+	Prints the frame, slot, or facet along the path. The AS option,
+	if present, allows an entire frame or slot to be printed out
+	by inhibiting total expansion of the path. The USING option
+	specifies a function, which must be a lambda of one argument,
+	which should be used to print out the resulting object in place
+	of the default function print.
+
+DISPLAY <object> { USING function }
+	Prints any object. If the object is an atom, it is quoted; thus,
+	"Display foo" will cause "foo" to be printed out. The USING
+	option here is identical to the USING option in the preceding case.
+
+SHOW { me } <frame name>
+	Equivalent to "DISPLAY <frame name> AS A FRAME USING $PRPR"--
+	results in a pretty-printed version of the named frame.
+
+			Advanced QUERIAN
+Local Environments
+
+WITH var AS <expr> { , var AS <expr> } { do } <stmts>
+
+	Evaluates all the expressions, associates their values with the
+	variables, and then executes the statement list. Thus, saying:
+	"with x as the site of exxon display (all x with its location
+	is texas), [are in texas and],(all x with its location is nj),
+	[ are in new jersey ] using shout" will give the names of sites
+	of Exxon in Texas and New Jersey with explanatory commentary.
+
+	If the statement list is a sentinel (see below), the listed
+	variables become part of the environment of the sentinel and
+	the expressions are evaluated when the particular clause of
+	the sentinel is triggered rather than when the "with" statement
+	is encountered.
+
+Iteration
+
+"<" <any framish expression> ">"
+
+	A quantity enclosed in angle brackets indicates an expression
+	which evaluates to a list of objects, each of which is to be
+	substituted in turn for the angle-bracketed quantity in the
+	expression and a list of the resulting values returned. This
+	is the basic iteration mechanism in Querian. Angle brackets
+	may be nested (see examples), but may not currently be placed
+	in parallel. Some examples:
+
+	"show me < all site of exxon where its location is texas >"
+	will exhibit the complete frames for all cities in Texas where
+	Exxon conducts operations.
+
+	"display the carryover of < the location of < all site of
+	shell where its carryover is greater than 50000 >>"
+	will print out carryover figures for all states in which
+	Shell has a site with a carryover of more than 50000.
+
+	Angle-bracketed quantities may also be collected for use
+	in arithmetic operations. The expression:
+	"the sum of < items >" will return a single value which is
+	the total of the values described by the items. It is also
+	possible to use difference, product, or quotient in place of
+	sum. An example:
+
+	"the sum of < the volume of < the site of exxon > >" will give
+	total volume of shipments for Exxon.
+
+	Due to the means by which arguments are collected, a very nice
+	effect of such a statement is that nonexistent fields are
+	eliminated; thus, if a certain site does not have a volume slot,
+	the above statement will not cause any execution errors and will
+	not affect the summation.
+
+Delayed Actions (Sentinels)
+
+   Conditional Clauses
+
+	A conditional clause consists of a path name and a predicate, written
+	in Querian as <path> HAVING <predicate>. In triggering a sentinel,
+	only those entries in the path which satisfy the predicate can cause
+	the sentinel to fire. In testing conditions, the entry just made
+	in the path is available as "the current value" in the predicate; thus,
+	if it is desired to trigger when Exxon expands to a new site in Texas,
+	it is possible to write "a site of exxon having the location of the
+	current value is texas" to represent this condition.
+
+   Sentinels
+
+	A sentinel consists of a type, a simple or compound conditional
+	clause, and a sequence of actions to be performed when the conditional
+	clause is satisfied. The initial keywords which distinguish a sentinel
+	are "WHEN" and "WHENEVER", and the general format is:
+
+	"(when, whenever) <cond clause> { is } (added, removed, found)
+		<actions>"
+
+	where the <actions> are any statements except another sentinel.
+
+	The type of a sentinel is determined by the choice of keywords. There
+	are four types currently implemented:
+
+	"if-ever" (written "when ... added") causes the actions to be performed
+		once when an item satisfying the conditional clause is added
+		to some frame mentioned therein.
+	
+	"when-ever" (written "whenever ... added") causes the actions to be
+		performed any time an item satisfying the conditional clause
+		is added to some frame mentioned therein.
+	
+	"if-never" (written "(when, whenever) ... removed") causes the actions
+		to be performed any time an item satisfying the conditional
+		clause is removed from some frame mentioned therein.
+	
+	"for-ever" (written "(when, whenever) ... found") functions as a
+		when-ever, except that all values currently residing in
+		the frames of the conditional clause are treated as if
+		they were added after placement of the for-ever.
+	
+	The conditional clause which forms the test of the sentinel may
+	either be a simple clause or a compound clause formed of a sequence
+	of simple clauses joined by the keywords "and" and "or". In the
+	latter case, each simple clause must be parenthesized; thus, if
+	it is desired to trigger a sentinel whenever either Exxon or
+	Standard occupies a new site in Texas, this must be written:
+
+	"whenever (a site of exxon having the location of the current value
+	is texas) or (a site of standard having the location of the current
+	value is texas) is added ...".
+
+	A second type of conditional is also available if it is desired to
+	restrict triggering to a single instance of a frame. This is the
+	in-condition of a sentinel. If a conditional clause is preceded by
+	the phrase "in <path>," or "in <token>," the frame in the path or
+	the token, respectively, is bound to the current path frame while
+	the conditional clause following the comma is evaluated. The comma
+	is necessary to locate the beginning of the conditional clause.
+	If the conditional clause is a conjunction, it is restricted to
+	occur on only one instance of the frame mentioned in the "in" clause.
+
+                                TIMISH
+
+
+----------------------------------------------------------------
+MOMENT M
+
+Time ON Date
+
+  Time T = { 4, 4:30 ... } {am, pm};  NOON, MIDNIGHT
+
+  Date D = (<weekday>,) <month> <day>, <year>
+           (<weekday>,) <month> / <day> / <year>
+	   Eg, January 30, 1978 or 1/30/78
+
+NOW				; the current moment
+
+the {beginning, end} of I	; I is an interval
+
+
+-----------------------------------------------------------------
+INTERVAL I
+
+T1 to T2 on D
+
+T1 on D1 until T2 on D2
+
+
+-------------------------------------------------------------------
+DURATION
+
+<number> {weeks, days, hours, minutes}
+
+a (sum, total) of Duration1, Duration2 ...
+
+IMMEDIATELY			; Zero duration
+
+the span of I			; I is an interval
+
+------------------------------------------------------------------
+RELATIVE INTERVAL
+
+{this, next, previous} {minute, hour, day, week, month, year,
+                        <monthname>, <dayname>}
+
+TODAY				; "this day"
+TOMORROW			; "next day"
+YESTERDAY			; "previous day"
+
+
+------------------------------------------------------------------
+RELATIVE MOMENT
+
+<Duration> {before, after} {<Moment>, <Interval>}
+
+<Duration> {hence, ago}
+
+
+------------------------------------------------------------------
+REFERENCE TIME
+
+time of <activity frame>
+
+date of T
+
+daytime of T
+
+weekday of T
+
+
+--------------------------------------------------------------------
+COMPARISONS
+
+later
+earlier
+during
+	compare two times of day.  Eg, "X is later than Y"
+
+follows
+precedes
+	compare two times.
+
+                        Some FRAMISH Examples
+
+
+
+A requirement for the time of MEETING is that the current value is
+later than 1 pm.
+
+
+The default for the place of MEETING is John's office.
+
+
+Remove Susan as a default for the participant of MEETING.
+
+
+
+
+Create an information-object called progress-report.
+
+
+Its authors are Bruce, Mitch, myself.
+
+
+The default for its deadline is the end of next week.
+
+                         Some TIMISH phrases
+
+
+
+Immediately after the time of APPOINTMENT-WITH-BILL.
+
+
+Noon to 4:15 pm on March 15, 1978.
+
+
+A total of 2 weeks and 3 days hence.
+
+
+Tomorrow.
+
+
+1 pm on next Friday.
+
+
+Columbus Day.
+
+

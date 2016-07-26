@@ -1,0 +1,152 @@
+From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 13:05:06 1988
+Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
+	id AA07811; Thu, 2 Jun 88 13:05:05 JST
+Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
+	id AA03690; Thu, 2 Jun 88 12:43:44 JST
+Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
+	id AA07935; Thu, 2 Jun 88 12:44:03+0900
+Date: Thu, 2 Jun 88 12:44:03+0900
+From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
+Return-Path: <z30083@tansei.cc.u-tokyo.junet>
+Message-Id: <8806020344.AA07935@tansei.cc.u-tokyo.junet>
+To: ida@aoyama.junet
+Subject: domain.doc
+Status: RO
+
+>From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Sat Mar  1 06:15:36 1986
+Date: Wed, 26 Feb 86 14:39:48 PST
+From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
+Message-Id: <8602262239.AA08159@franz>
+To: ida@csnet-relay.arpa
+Subject: domain.doc
+Status: R
+
+Description of knowledge domains and restricted access to domains.
+
+A domain can be declared by the function domain.
+The same function which declares rule-domains is used to declare
+domains, thus the syntax is exactly the same as with a rule-domain.
+
+Syntax:
+
+(domain name ako domain (arguments)
+  attributes)
+
+example: 
+(domain temp nil nil
+  (domain-slot elements)
+  (put add-to-table)
+  (remove delete-from-table)
+  (gather select-best-one))
+
+etc. 
+As a frame this is:
+(fassert temp 
+  (ako ($value (domain)))
+  (domain-slot ($value (elements)))
+  (put ($value (add-to-table)))
+  (remove ($value (delete-from-table)))
+  (gather ($value (select-best-one)))
+  (elements ($if-added (add-to-table))
+	    ($if-removed (delete-from-table))))
+
+To add an frame to a knowledge domain, one only needs to create a slot
+domain in that frame with the $value of the appropriate domain
+which you wish it become a member.
+
+When an frame is added to a domain, it gets added to the $value facet
+	of the domain-slot's $value of the domain frame.  The
+	default slot is instance-in-domain, this can be changed
+	by setting the value of the slot domain-slot in the domain
+	frame.
+If there is a put slot in the domain frame, this is a daemon which
+	gets executed each time a new frame is added to the domain.
+A remove slot is used in the domain frame, to indicate a daemon to
+	run whenever a frame is removed from a domain.
+The gather slot is the same as described in the rule system, and
+	can be used with the put and remove slots to sort or
+	otherwise cross-index frames inside the domain.
+
+A domain can be used for many purposes:
+
+a) sort many frames and quickly retrieve a small set which would
+	be needed for a particular instance (instead of searching
+	linearly through all the frames).
+
+b) Declare information in a frame which is only visible inside
+	a domain and not in other domains.
+	Thus one can make an assumption in one domain and add elements,
+	switch domains, and all the assumptions and consequences of
+	these assumptions will go away with the change of domain.
+
+c) Can be used to organize frames into seperate contexts or domains,
+	as with rules in rule frames.
+
+An simple example of the above is in dhl//besttower.l
+
+Restricted access and inheritance functions:
+
+In order to restrict access and information seen in a domain,
+there must be access (get, put, replace, remove, etc.) functions
+which do this.
+These functions are rget,rput,rreplace,rremove,rdata,rchildren,rslots,
+etc. (for a full list see the file frl//raccess.l), their is basically
+one for each in the FRL manual where fname -> rname.
+They can be used to do multiple inheritance with roles, 
+or restricted knowledge in domains.
+They have 5 global variable which determine exactly how they
+work:
+
+variable		setting for roles	setting for domains.
+
+:comment-field		'role:			'domain:
+:not-comment-field	'not-role:		'not-domain:
+$facet-field		'$role			'$domain
+$not-facet-field	'$not-role		'$not-domain
+slot-field		'role			'domain
+inherit-slot-field	'role			nil  (??)
+
+The current limiting values of a frame are the values of the 
+slot-field of the frame.
+
+If the slot-field has a value nil or no value, there is no restrictions.
+
+If the slot-field of a frame has a value, then the following rules
+apply to decide whether or not a slot and value is visible.
+
+Slot:	if any of the slot-field's values are in the $facet-field
+	facet of the same slot, then this slot is visible.
+
+	if there is not $facet-field, but there is a $not-facet-field
+	on the same slot, and all elements in slot-field of the frame
+	are in the  $not-facet-value, then the slot is not visible.
+
+	if there are slot-field values, and there is a $facet-field
+	datum, one of the slot-field values must be in the $facet-field
+	in order for the slot to be visible.
+
+Data:	if the slot is not visible, the data in it is not visible.
+
+	Same rules with :comment-field and :not-comment-field,
+	apply to data elements as the  $facet-field and
+	the $not-facet-field with slots.
+	
+If data is removed with the restricted remove or replace functions,
+	then a :not-commented field is added if the values would be
+	visible outside of the restriction, since only in the restricted
+	view should they become visible.
+
+
+Inheritance with the restricted functions is done through the 
+inherit-slot-field slot instead of the 'ako slot if the slot-field slot
+exists.
+
+The default setting in FRL of the above flags is for roles.
+
+There are special functions (dget,dput,dremove,and dreplace) which
+always work with domains.
+
+Sentinels and roles:
+ ???
+
+

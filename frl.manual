@@ -1,0 +1,1368 @@
+From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:11:51 1988
+Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
+	id AA08230; Thu, 2 Jun 88 14:11:49 JST
+Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
+	id AA04441; Thu, 2 Jun 88 13:34:40 JST
+Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
+	id AA08031; Thu, 2 Jun 88 12:44:55+0900
+Date: Thu, 2 Jun 88 12:44:55+0900
+From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
+Return-Path: <z30083>
+Message-Id: <8806020344.AA08031@tansei.cc.u-tokyo.junet>
+To: ida@aoyama.junet
+Subject: frl.manual
+Status: RO
+
+.nf
+>From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 19:58:35 1986
+Received: by u-tokyo.junet (4.12/4.9J)
+	id AA01326; Fri, 28 Feb 86 19:58:11+0900
+Received: by titan.junet (4.12/3.14)
+	id AA17408; Fri, 28 Feb 86 03:55:02 jst
+Received: by kddlabs.junet (4.12/4.7)
+	id AA03742; Fri, 28 Feb 86 02:00:23 jst
+Received: from csnet-relay.arpa by hplabs.ARPA ; Wed, 26 Feb 86 15:33:34 pst
+Received: from ucbvax.berkeley.edu by CSNET-RELAY.ARPA id a010962;
+          26 Feb 86 18:29 EST
+Received: by ucbvax.berkeley.edu (5.45/1.9)
+	id AA03481; Wed, 26 Feb 86 15:22:41 PST
+Received: by kim.berkeley.edu (5.45/1.8)
+	id AA05705; Wed, 26 Feb 86 15:22:08 PST
+Received: by franz (5.5/3.14)
+	id AA08150; Wed, 26 Feb 86 14:39:26 PST
+Date: Wed, 26 Feb 86 14:39:26 PST
+From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
+Message-Id: <8602262239.AA08150@franz>
+To: ida@csnet-relay.arpa
+Subject: frl.manual
+Status: R
+.fi
+
+.de Dt
+.ip \s-2DATA\s0: 6
+..
+.de bx
+\(br\|\\$1\|\(br\l'|0\(rn'\l'|0\(ul'
+..
+.de Ih
+.ip \s-2INHERITANCE\s0: 13
+..
+.de It
+.ip \s-2INTERACTIONS\s0: 14
+..
+.de Lg
+.sp 2v
+.ne 11
+.in 0
+.ie '\\$2'' (\\fB\\$1\\fP)
+.el \\fB\\$1\\fP\\$2
+.br
+.nr $i 5n
+." if troff, then put nice index entry, if nroff then we are making an
+." online manual so put out a cryptic lisp expression. If you want to
+." make an nroff version of the manual with index, then you will have
+." to alter the lines below: replace .if t with .if 1   and .if n with .if 0
+.if t .tm .In \\n(ch \\n% \\$1 "\\$2"
+.if n .tm (\\$1 ch\\n(ch.r)
+..
+." the following lines were added by rob milne
+.he 'Draft'%'FRL Manual'
+.de Re
+.sp 1
+.in +5
+..
+.de No
+.in -5
+..
+.de Lf
+.sp 2v
+.ne 3
+.in 0
+(
+.ie '\\$2'' (\\fB\\$1\\fP)
+.el \\fB\\$1 \\fP\\$2
+.br
+.nr $i 5n
+.if t .tm .In \\n(ch \\n% \\$1 "\\$2"
+.if n .tm (\\$1 ch\\n(ch.r)
+." temp macro for unknown definition
+)
+..
+.de Lc
+.Lf (\\$1 \\$2)
+." temp macro for unknown definition
+..
+." end of rob's hacks
+.ce
+MASSACHUSETTS INSTITUTE OF TECHNOLOGY
+.ce
+ARTIFICIAL INTELLIGENCE LABORATORY
+.sp
+.ce
+September 1977
+.sp 3
+.ce
+.bo
+The FRL Manual 
+.sp 2
+.ce
+R. Bruce Roberts and Ira P. Goldstein
+.sp 4
+.pp
+The Frame Representation Language (FRL) is described.
+FRL is an adjunct to Lisp which implements several representation
+techniques suggested by Minsky's [75] concept of a
+.i frame:
+defaults, constraints, inheritance, procedural
+attachment, and annotation.
+.(f
+.pp
+This report describes research done at the
+Artificial Intelligence Laboratory of the
+Massachusetts Institute of Technology.  It was
+supported in part by the Advanced Research Projects Agency
+of the Department of Defense under Office of Naval Research
+contract N00014-75-C-0643. DTIC #AD-A052-310 and AD-A053-306
+.)f
+.bp
+
+.pp
+Figure 1 shows FRL from the larger perspective of intelligent
+support systems.  FRL comprises the two bottom layers:  a 
+specialized data structure (the frame) and a collection of
+LISP functions for defining frames, storing and retrieving
+information.  It has been used to implement NUDGE [Goldstein &
+Roberts 77], a system for maintaining a person's schedule of
+activities in the face of individual preferences, conflicting
+constraints, and changing plans; PAL, a natural language front
+end for NUDGE [Bullwinkle 77]; a system to assist planning a
+birthday party [Clemenson 77]; 
+TRIPPER, a knowledge base for places and travel around the country
+[Jeffery 77];
+a representation for the discourse
+structure of news articles [Rosenberg 77]; and COMEX [Stansfield
+77], a system for understanding discourse about the commodities
+market.
+.sp 2
+.ne 1.3
+.ce
+.fi
+.i scheduling,\ natural\ language,\ reasoning,\ ...
+.br
+.sp
+.ce
+.fi
+.i time,\ place,\ people,\ plans,\ objects,\ information,\ ...
+.br
+.sp
+.ce
+.fi
+.i defaults,\ constraints,\ procedural\ attachment,\ inheritance,\ comments
+.br
+.sp
+.ce
+.i frames
+.br
+.sp 2
+.ce
+- Figure 1 -
+.sp
+.pp
+The intellectual issues surrounding the representation
+techniques provided by FRL are discussed in
+[Goldstein & Roberts 77].  A primer [Roberts & Goldstein 77]
+is available consisting of an extended example using FRL and an abridged
+version of this manual.
+.sp
+.sh 1 WHAT\ IS\ A\ FRAME\ IN\ FRL? 
+.pp
+An FRL
+.i frame
+is implemented as nested association lists with at most five
+levels of embedding.  The respective
+sub-structures of a frame are
+.i slot,\ facet,\ datum,\ commment
+and
+.i message.
+The overall structure of a frame is:
+.sp
+.nf
+.ne 10
+.in +5
+(frame)
+ (slot1 (facet1 (datumv1 (label1 message1 ... more messages...)
+                           ...more Comments...)
+                (datum2 (label1 message1 ... ))
+		  ... more Data ...)
+        (facet2 (datum1 (label1 message1 message2 ...)))
+	 ... more Facets ...)
+ (slot2 (facet1 (datum1 (label1 message1 ...) ...) ...) ...)
+  ... more Slots...)
+.in -5
+.sp
+.fi
+.pp
+We will refer to the first element in one of these sub-structures as the
+indicator (said to name the structure) and the remaining elements
+collectively as the bucket
+(in the case of a slot, the bucket is a list of facets, for
+example).  A path of indicators identifies a substructure in
+a frame.  The order of sub-structures at any level
+in a frame is insignificant.  In practice, facet names 
+conventionally have a prefix "$"; labels, a suffix ":".
+This is simply to facilitate their recognition by the programmer.
+.sh 1 Frames\ and\ their\ names 
+.Lf frame "'frame"
+.Re
+returns
+a frame structure of the kind shown on the preceding page.
+An error if
+.i frame 
+is neither a frame name nor a frame structure.
+.No
+Unless stated otherwise, a frame argument to any function can be either the
+name of a frame or the frame structure itself.
+.Lf frame? "'frame"
+.Eq
+is like frame except
+returns nil if frame doesn't exist.
+.Lf frame+ "'frame"
+.Eq
+is like 
+.i frame 
+except that if frame is a name for a nonexistent frame,
+a frame is fcreated and returned.
+.Lf fname "'frame"
+.Re
+returns the name of frame.  An error if frame is neither a frame name
+nor a frame structure.
+.Lf fname? "'frame"
+.Eq
+is like
+.i fname 
+except returns nil if frame doesn't exist.
+.Lf fslots "'frame"""
+.Re
+returns a list of the slot names in frame.
+.Lf fcopy "'frame"
+.Re
+returns a copy of frame.
+.sh 1 Adding\ and\ removing\ frames
+.Lf fassert "name slot1 slot2 ... slotN"
+.Re
+creates a frame called name (if it doesn't already exist)
+containing the slots slot1 ... slotN.  If the name frame 
+exists, the new information in the slots is
+.i merged
+with the existing slots.  The frame is stored as the
+frame property of name and name is added to *frames*, the list of
+known frames.  fassert is a fexpr.
+.No
+The 
+.i fassert 
+switch.
+If 
+.i fassert
+is nil, fassert forms are not interpreted.
+This is convenient for selectively reading just the code in a file
+containing intermixed code and frame definitions.
+.Lf ferase "'frame"
+.Re 
+removes 
+.i frame
+from the frame property of its name and its name from the list
+*<frame*
+.No
+Fassert and ferase can cause side-effects if the frame being
+added or removed contains slots with values.  These
+values are added or removed individually using fput and
+fremove respectively and may trigger the execution of attached
+procedures.  These issues will be considered in greater
+detail shortly.
+deframe and fdestroy, unlike fassert and ferase,
+have no side-effects.
+.Lf deframe "name slot1 slot2 ... slotN"
+.Re
+creates a frame 
+.i name 
+containing precisely the slots slot1 ... slotN.
+If the name frame already exists, its previous definition is
+fdestroy-ed.  Deframe is a fexpr.
+.No
+The 
+.i deframe 
+switch.
+If deframe is nil, deframe forms are not interpreted.
+This is convenient for selectively reading just the code in
+a file containing intermixed code and frame definitions.
+.Lf fdestroy "'frame"
+.Re
+removes frame for the frame property of its name and
+deletes its name from the list *frames*.
+.Lf freset
+.Re
+removes all frames from the system.  It uses fdestroy.
+.Lf fcreate "{'name}"
+.Re
+creates and empty frame and returns its name
+The name will be unique.  Name, if given, will be 
+used instead, although it may be modified
+by fgename to guarantee uniqueness.  Frame
+names must be atomic.
+.No
+Bracketed expressions -- {...} -- are used
+in this manual to denote optional arguments.  An unbalanced
+right bracket -- } -- denotes the possible end of the
+argument list for a Lexpr.
+.Lf fgename "'name"
+.Re
+returns a guaranteed unique frame name by adding
+a numerical suffix to name.
+.sh 1 The\ ako\ and\ instance\ slots 
+.pp
+A slot is a generalization of the attribute-value
+pair in the traditional Lisp property list
+representation.  
+.i $value 
+is the slot "facet" which
+indicates its values.  Five other facets indicate
+other types of knowledge associated with the slot.
+Data in the 
+.i $default 
+facet supplies defaults.  Data
+in 
+.i $if-added 
+and 
+.i $if-removed 
+facets are procedures
+triggered whenever a slot value is added or removed.
+.i $if-needed 
+data are procedures which may compute a
+slot value.  The 
+.i $require 
+facet holds predicates
+which describe and restrict the value.
+.pp
+Two slots are recognized by FRL system functions:
+.i ako 
+(a kind of) and 
+.i instance.
+These define a relation
+between frames along which data is inherited.
+FRL maintains ako and instance as inverses.  The ako
+relation can be used to establish a conceptual hierarchy
+of frames in which general information stored
+higher in the hierarchy is inherited by more
+specialized concepts lower in the hierarchy.  Functions
+like fget implement this inheritance mechanism.
+.pp
+A relation between frames is defined by making the name
+of one frame the value of a slot in another
+frame.  The slot names the relation.  A tree of frame
+relations is possible since a slot can have many values.
+Several functions are provided to examine these relations.
+.Lf fchildren "'frame 'slot"
+.Re
+returns a list of the immediate inferiors of frame along
+the relation name by slot.  This is just a list of values
+of slot.
+.Lf ftree "'frame 'slot"
+.Re
+returns a tree of the form (root subtree1 subtree2 ...)
+with frame at the root; each subtree's root is a 
+child of frame along
+the relation named by slot.
+.Lf fdesdendants "'frame slot"
+.Re
+returns a list of
+all inferiors of frame along the relation slot defines.
+That is, it includes all the frames occurring in the
+"tree" of ftree except the root frame.
+.Lf fringe "'frame 'slot"
+.Re
+returns a list of all "leaves" on the tree of (ftree frame slot).
+.Lf flink? "'slot 'f1 'f2"
+.Re
+returns T only if a path exists from f1 to f2 following only
+the slot "link"; i.e., if one of the values
+of slot of f1 is f2, or (flink? 'ako f1 f2) is true for any of
+these values.
+.Lf ako? "'f1 'f2"
+.Re
+returns T only if f1 is a kind of f2.  Equivalent to (flink?
+'ako f1 f2).  Similar definitions are
+possible for any slot whose
+value is another frame.
+.No
+One frame is predefined in FRL:  
+.i Thing.  A
+partial definition of it follows:
+.nf
+.sp 2
+.ta 1i
+(thing
+	(ako ($if-added ((add-instance)))
+	($if-removed ((remove-instance))))
+	(instance ($if-added ((add-ako)))
+	($if-removed ((remove-ako)))))
+.sp 2
+.fi
+.Lf finstantiate "'frame {'frame)"
+.Re
+returns an instance of a new frame which it creates
+(using fcreate); i.e.,
+it possesses only an ako link to frame.  Its name
+is derived from name (using fgename) and will be
+unique.  The newly created frame is returned.
+.No
+The existence of the 
+.i ako 
+link implies a
+heritage for a frame (or any part of a frame)
+consisting of all information both in that frame and
+in all the frames accessible along the AKO link.
+.Lf fheritage "'frame 'slot} 'facet} 'datum} 'label}"
+.Re
+returns a structure formed by merging the
+structure pointed to by the indicator path --
+the argumens to fheritage -- with all corresponding
+structures of the frames accessible along the AKO link.
+.pp
+.ul
+The\ in\ comment.
+Each datum in the heritage will have a comment -- 
+.i (in:\ frame)
+-- added by fheritage to record the frame in
+which the datum actually occurs.
+.Lf fheritage-slots "'frame"
+.Re
+returns a list of slot names occurring in (fheritage frame).
+.No
+By convention, frames in an ako hierarchy are distinguised as
+being either generic or individual by the value of
+their 
+.i classification 
+slot.  Two predicates
+test the classification of a frame.
+.Lf individual? "'frame"
+.Re
+returns T only if frame is marked as an
+individual.  Individual? returns nil if frame is
+generic, and ? otherwise.
+.Lf generic? "'frame"
+.Re
+returns T only if frame is marked as an
+generic.  Generic? returns nil if frame is
+individual, and ? otherwise.
+.sh  Adding\ and\ Removing\ Parts\ of\ a\ Frame 
+.Lf fput "'frame 'slot} 'facet} 'datum} 'label} 'message)"
+.Re
+Adds the last argument at the point in frame named by the
+indicator path (the intervening arguments)
+and returns the modified frame.  Adding new information
+to a frame is a
+.i merging
+process that retains the uniqueness of each
+indicator.  Fput is a lexpr and can take from
+2 to 6 arguments.  It can be
+used to add an element anywhere in a frame; to
+add a slot name to frame or to put a
+message in a comment labeled label.
+.pp
+Fput has a side-effect:  Putting data items into a
+$value facet triggers the
+execution of all procedures in the $if-added facet
+of the slot.
+.Lf fput-structure "'frame"
+.Lf fput-structure "'frame 'slot-structure"
+.Lf fput-structure "'frame 'slot 'facet-structure"
+.Lf fput-structure "'frame 'slot 'facet 'datum-structure"
+.Lf fput-structure "'frame 'slot 'facet 'datum 'comment"
+.Re
+This family of fput-structure functions differs from
+fput only in that the last argument is considered 
+to be an entire sub-structure (rather than an indicator).
+The entire structure is merged into frame.  Like fput,
+fput-structure may trigger $if-added procedures.
+.Lf fremove "'frame 'slot} 'facet} 'datum} 'label} 'message}"
+.Re 
+Deletes the sub-structure of frame indicated by the
+path slot - facet - datum... 
+Fremove is a lexpr taking from 2 to 6
+arguments.  The structure deleted will have had
+as its indicator the final argument to fremove.
+.pp
+Fremove has a side-effect:  If any data in a $value facet is
+deleted by this command, all procedures in the
+$if-removed facet of the slot are executed.
+.Lf freplace "'frame 'slot} 'facet} 'datum} 'label} 'message}"
+.Re
+Freplace is like fremove-ing all existing items following by fput with the arguments
+given. Following a call to this function, the only item present at the
+terminus of the indicator path is the final argument.
+.Lf fdelete "'frame 'slot} 'facet} 'datum} 'label} 'message}"
+.Eq 
+like Fremove
+except never triggers any side-effects.  The portion of
+frame identified by the indicator path is simply excised.
+.sh 1 Retrieving\ Parts\ of\ a\ Frame 
+.pp
+The following questions should be kept in mind when
+retrieving data from a facet.
+.ip
+**What is the expected form of the data?
+.ip
+**How is the data inherited?
+.ip
+**How does it interact with other facets?
+.ip
+**are any special comments associated with the data?
+.pp
+But before considering individual facets,
+three general properties of facets and
+their data will be discussed:  
+.i evaluation,\ indirection,
+and
+.i inheritance.
+.sh 2 Evaluation  
+.pp
+Normally, data in a frame is interpreted literally.
+The access functions return just what one sees in a 
+frame if it were printed out.  Data can be computed
+however, and to specify that a datum is to be
+evaluated whenever accessed, FRL provides:
+.ti +10
+.ul
+The\ %\ Special\ Data\ Form. 
+.pp
+A percent sign prefixed to a datum causes
+the evaluated datum to be returned whenever it is
+accessed.
+.pp
+The implementation of % as a prefix character requires
+that it be defined as a readmacro in Lisp.  See Section 1.y.z??
+for other changes to the standard 
+.Fr
+environment
+necessitated by FRL's operation.
+.ip
+The data element is evaluated in a particular
+.i frame\ environment,
+as determined by the frame, slot, and facet
+named in the retrieval request.  The global
+variables 
+.i :frame,
+.i :slot,
+and 
+.i :facet 
+at the
+time of evaluation can be assumed to be locally
+bound to the names of the "current" frame, 
+slot, and facet.
+Because of indirection and inheritance, the
+frame environment may not be the one
+in which the datum actually lies.  Situations
+may arise when the user will want to explicitly
+establish a frame environment for the evaluation
+of an expression.  A function has been provided
+to facilitate this.
+.Lf feval "'s-expression 'frame} 'slot} 'facet}"
+binds 
+.i :frame,
+.i :slot,
+and 
+.i :facet 
+to the values
+supplied.  It then evaluates the S-expression and
+returns the result.  If an argument is missing
+or nil, the prior (higher) binding is unaffected.
+.sh 2 Indirection 
+.pp
+Datum in one frame can be retrieved indirectly by a
+request for datum in a different frame.  This indirection
+is denoted by:
+.sh 3 The\ @\ special\ data\ form. 
+.pp
+A datum with a prefix atsign is interpreted as an
+indirection pointer to
+.i all
+the data in another frame.  The pointer is an
+indicator path:  frame, slot, facet.  When
+accessed, the data items pointed to by the
+indirection are copied and spliced together with
+any other items in the facet (generally, a facet can have
+many data items).  The behavior of indirectly accessed
+items is equivalent to the local items.
+.pp
+A related convention alows one to define a slot
+in a frame to hold informaion accessed indirectly
+by another.
+.sh 3 The\ non-atomic\ slot\ convention. 
+.pp
+If a slot is created whose indicator is non-atomic,
+the car of the slot name is considered
+to name a frame and the cadr a slot in frame.
+An indirection pointer is put in each of the
+existing facets of the indicated slot in frame
+pointing back to the corresponding facet of the slot
+just created.
+.sh 3 Comments: 
+.ip
+** Each indirect datum returned will receive a comment
+of the form (in: frame).  Frame is the name of the
+target frame lying at the end of the indirection chain.
+.ip
+** Evaluation and indirection are mutually exclusive.  A
+datum may be evaluated, expanded as an indirection pointer,
+or receive no special processing.
+.ip
+** How does evaluation differ from indirection?  Evaluation
+returns a single datum.  Indirection causes a list of data
+items to be appended to the list of structures returned from
+the local frame.
+.ip
+** The target of an indirection pointer can be another indirection
+pointer, in which case the process is repeated.  If the target
+is to be evaluated (i.e., it is a % special data form) the
+evaluation is performed in the frame environment established
+by the original request.
+.ip
+** The elements of an indirection pointer are evaluated
+in the frame environment of the indirection pointer.
+.ip
+** Indirection pointers with less than three elements are
+extended using 
+the :slot and :facet of the current frame.
+.sh 3 Inheritance 
+.pp
+The 
+.i ako 
+relation can be used to establish a hierarchy of
+frames in which general information stored higher in
+the hierarchy is
+.i inherited
+by more specialized concepts lower in the
+hierarchy.  These three functions return data inherited
+along the 
+.i ako 
+link of a frame.
+.Lf finherit "'frame 'slot 'facet"
+.Re
+returns a list of the datum structures.
+Finherit looks first for data in the slot and facet of frame.  If
+data exists, a list of the datum structures is returned.
+If no data is found, the corresponding facet of the frame
+named in frame's 
+.i ako 
+slot is inspected for data; and so on 
+until a frame is found contaning data -- which is then 
+returned.
+.sh 4 Comments:
+.ip
+** Inheritance stops at the first frame along the
+chain of 
+.i ako 
+links whose selected facet contains
+some data.  This precedes any processing of
+special indicators for indirection and evaluation;
+hence, an indirect link and a to-be-evaluated datum
+are seen as non-empty data for the purpose of
+controlling inheritance.  This fact can be used to
+construct a datum to "mask" the existence of data
+lying further along the 
+.i ako
+chain.  The form -- 
+.i %nil 
+-- as the datum element, being non-nil itself, will stop
+the inheritance of any data from 
+.i ako
+frames; and, assuming
+it is the only datum element in the facet, will
+subsequently be evaluated and return nil.
+.ip
+** If no data is found, finherit returns nil.
+.ip
+** A frame can be A-Kind-Of more than
+one other frame; i.e., have more than one value
+in its 
+.i ako
+slot.  Finherit traces each of the 
+.i ako
+paths, stopping
+at the first data encountered along each, and returns a list
+of all data thus found appended together.
+.ip
+** The 
+.i finherit 
+Comment.  A comment --
+.i (finherit:continue)
+-- on any datum structues in a facet causes the inheritance
+to proceed further aong the 
+.i ako
+link as if no
+data had been found; it returns the local data appended
+to that found further along the link.
+.ip
+** The 
+.i in 
+Comment.  A comment --
+.i (in:frame)
+-- is inserted in each datum returned by the inheritance process, where
+frame is the name of the frame which actually held the datum.
+.ip
+** Subsequent evaluation of inherited data is done in the Frame
+Environment of the original call to finherit.
+.pp
+The inheritance process defined by finherit is applicable
+to any facet.  The following two variations treat the 
+.i $value
+facet specially.  In both cases, the inheritance along the
+.i $value
+facet interacts with the 
+.i $default 
+facet.
+.Lf finherit1 "'frame 'slot 'facet"
+.Re
+Like
+.i finherit
+except if facet = 
+.i $value,
+before following the 
+.i ako
+path to look for a value, it inspects
+the 
+.i $default 
+facet of slot.  This process is
+repeated at each step up the 
+.i ako
+path.  If no values
+are found, but defaults exist, they are returned instead.
+.Lf finherit2 "'frame 'slot 'facet"
+.Re
+Like 
+.i finherit 
+except if facet = 
+.i $value,
+it is equivalent to: (or (finherit frame slot $value)
+(finherit frame slot $default))
+.sh 2 Frame\ Data\ Retrieval
+.Lf fget "'frame 'slot 'facet"
+.Re
+returns a list of all the data items in facet of slot in
+frame.  The data is accessed using the function finherit1.
+Several data items are possible, thus a list is returned.
+Any % or @ Special Forms are converted as described
+in section 1.4.  Each element in the
+returned list is a complete data item; i.e., its bucket
+still contains the comments.  Fget returns a list of
+all the indicators in the bucket addressed by the path
+of arguments.  Usually, three arguments are given.  The
+value of a slot is retrieved by (fget frame slot '$value). 
+Fget looks first in the slot of frame.  If
+data exists, a list of the items is returned.  If no data
+is found, the facet of the frame named in frame's ako
+slot is inspected; and so on until a frame
+is found containing data, which is then returned.
+.No
+An important special case is Fget-ting from a 
+$value facet.  If
+still no value is found, fget repeats, looking in the 
+$default facet instead.
+.No
+The following questions represent useful distinctions
+to make in retrieving data from a frame database.
+.ip
+** How many items of data are expected?
+.ip
+** Should the data be returned with its Comments?
+.ip
+** Should data marked for evaluation be evaluated?
+.ip
+** Should indirection pointers be chased and the data thus found
+be included?
+.ip
+** If the frame and slot specified do not yield any data, should any
+attempt be made to inherit?  And if so, what kind?  I.e., none,
+finherit, heritage, and, in the case of $value, finherit1 or
+finherit2.
+.ip
+** Should any $if-needed procedures be attempted?  And if so,
+what kind?  I.e., none, immediate, request, default, etc.
+.pp
+The fget function can be parameterized aong these
+dimensions as follows:
+.Lf fget "'frame 'slot 'facet {'keywords}"
+.Re
+returns data from the indicated facet according to the contents
+of the keywords list.  Allowable keywords are:
+.sp 1
+.TS
+box center ;
+l | l .
+=
+A/O	All/One
+C/-C	Comments/NoComments
+%/-%	Evaluation/NoEvaluation (Must be slashified)
+@/-@	Indirection/NoIndirection (Must be slashified)
+0/1/2/H/-H	Finherit,-1,-2/Heritage/NoHeritage
+=
+.TE
+.sp
+.pp
+The upper case letters in each keyword are useful
+abbreviations.  As described, fget without a retrieval
+key is equivalent to the specification:  (A -C % @ 1).
+Omitted keywords will be supplied from this default
+specification.
+.pp
+The choice of retrieval keys affects the form of the
+returned data.  
+.i One 
+and 
+.i all 
+imply a single
+item or a list of items is returned, respectively.  
+.i Comments
+requires that the returned object be in the form
+of a bucket; whereas the objects returned under 
+.i nocomments
+are indicators.
+.pp
+Appendix D lists numerous synonyms for common variations of
+fget.  Retrieving information from a frame database is also
+accomplished by matching a frame pattern against the 
+frames in the database.  The function ffind is
+presented in the paper [Rosenberg&Roberts77] which
+discusses matching frames in FRL.
+.sh 2 Retrieval\ functions\ in\ a\ frame\ environment 
+.pp
+Frequently one writes a value retrieval expression
+to be evaluated in a frame environment (i.e., where
+.i :frame,
+.i :slot,
+and 
+.i :facet 
+are externally bound);
+for example, inside an attached procedure.  Two
+special abbreviation forms are recognized in this
+case to facilitate writing expressions for retrieving
+the value of a slot using finherit.
+.sh 3 The\ !\ Special\ Form  
+.Lg ! "('frame 'slot)"
+.Eq 
+(fget frame slot '(0 -C/%/@0))
+.Lg ! "('slot)"
+.Eq 
+(fget :frame slot '(0 -C/%/@0))
+.Lg ! "'slot"
+.Eq
+(fget :frame slot '(0 -C/%/@0))
+.Lg !! "<as above>"
+.Eq 
+(fget ...'(A -C/%/@0))
+.sh 3 The\ &\ Special\ Form 
+.Lg & "('frame 'slot)"
+.Eq 
+(fget frame slot '(0 C/%/@0))
+.No
+The & macro takes the same forms as the ! macro.
+.Lg && "<as above>"
+.Eq
+(fget ... '(A C/%/@0))
+.pp
+In both the ! and & special forms, ! forms can be 
+substituted for the slot and frame.
+For example, if the meeting frame has slots who and
+where, an expression --!(who office) -- appearing in
+the $if-needed procedure of where means the
+value of the office slot in the frame for the participant
+(who) of meeting.
+.sh 1 The\ seven\ (plus\ or\ minus\ two)\ facets\ of\ knowledge 
+.pp
+Several facets have been mentioned so far as
+participating in the storage and
+retrieval of informaion in a frame.  This section answers
+in detail the questions raised in section 6??.
+.sh 2 The\ $value\ facet 
+.Dt
+The data in a $value
+facet is an arbitrary S-expression.
+.Ih
+finherit, finherit1 or finherit2.
+.It
+The $value
+facet interacts with all other facets.
+.sh 2 The\ $default\ facet 
+.Dt
+the data in a $default facet is an arbitrary s-expression
+.Ih
+finherit.
+.It
+The $value
+facet (via finherit1 and finherit2).
+.sh 2 The\ $if-added\ and\ $if-removed\ facets
+.pp
+Data in the $if-added and $if-removed facets is
+treated as Lisp forms.  The forms in the $if-added facet
+will be evaluated whenever a value is added to the
+slot (i.e., in the $value
+facet) by fassert or fput.  The
+forms in the $if-removed facet will be evaluated whenever
+a value is deleted from a slot (i.e., from the $value
+facet) by ferase or fremove. 
+.ip
+** No $if-added procedure will be run if the value was already there.
+This serves to eliminate loops.
+.ip
+** No $if-removed procedure will be run if the value was not actually there to be removed.
+.ip
+** The order in which the procedures are run is not fixed.
+.ip
+** The procedures will be run in a
+.i frame\ environment
+in which the following free variables have been bound:
+.br
+.i :frame 
+= frame
+.br
+.i :slot
+= slot
+.br
+.i :facet 
+= $if-added or $if-removed (as appropriate).
+.pp
+In addition, the free variable ":value" will be
+bound to the datum whose addition or removal
+caused the execution of the attached procedures.
+.ip
+** if-added and if-removed procedures are inherited using finherit.
+.ip
+** The apply Convention.  Interpreting data in the $if-added and 
+$if-removed facets as procedures permits the convention that if
+it is atomic, rather than eval'ing it, it is considered the
+name of a function of no arguments and APPLY'ed to NIL.
+.Lf frun "'s-expression 'frame} 'slot} 'facet}"
+.Eq  
+Like feval except for the manner in which it handles
+atoms.  If S-expression is atomic, (apply atom nil) is
+evaluated and the result returned.
+.sh 2 The\ $if-needed\ facet
+.Dt
+Lisp procedures.
+.Ih
+finherit.
+.It
+The $value facet.
+.pp
+No explicit functions are predefined to interact
+with $value
+because personal conventions are so
+easily established.  For example, a hypothetical:
+.Lf fget-as-needed "'frame 'slot"
+.Eq
+(or (fget frame slot) (fneed frame slot)
+.Lf fneed "'frame 'slot {'types}"
+.Re
+Returns a value under the following rules.
+Fneed runs the $if-needed procedures associated with frame
+and slot; and if one of them returns a 
+value, fneed returns it.  Optionally, only those
+with a comment of the form (type: type) are attempted,
+where type is an element of the types list.  Suggested
+useful restricting comments are:  request, immediate, and deduce.
+.sh 3 Comments:
+.ip
+** The apply convention.  [See $if-added]
+.ip
+** Frame Environment [See $if-added]
+.ip
+** The $if-needed Convention.  $if-needed procedures should
+be written to return nil if they fail to add a
+value to the slot.
+.sh 2 The\ $require\ facet
+.pp
+Data items in the $require facet should be a Lisp predicates
+which describe allowable values for the slot.  There is an
+implicit conjunction between all data items present.  Consistent
+with the view of specialization as involving
+additional restrictions on more general concepts, $require data
+is inherited by taking the Heritage.  The predicates are
+evaluated in the appropriate frame environment, as with the other
+procedural knowledge already discussed.
+.sh 3 Checking\ requirements
+.pp
+In FRL, requirement checking is done using the following
+function to maintain the so-called :value convention.
+.Lf fapply-constraints "'constraints 'values"
+.Re
+returns a 
+.i poll
+(see fpoll) produced by evaluating each of the
+constaints.  A constraint is any S-expression with
+a Boolean value.  Fapply-constraints binds the free
+variables :value and :values, by which constraints
+can refer to potential values.  If values has only one elment, it
+is bound to :value and values to :values; otherwise,
+:value = nil.
+.Lf fpoll "'predicates"
+.Re
+returns a
+.i poll.
+.No
+Fpoll evaluates the predicates and records whether each was T,
+NIL, or caused an error.  Returns a
+.i poll:
+.nf
+(<summary> (t ... true predicates ...)
+  (nil ... false predicates ...)
+  (? ... error-producing predicates ...))
+.fi
+where the <summary> is t only if all are true,
+nil only if some are false and none
+produce errors, and ? otherwise.
+.Lf fpoll-summary "'predicates"
+.Eq
+fpoll but returns only the "summary" portion,
+not the entire poll.
+.Lf fcheck "'frame 'slot {'values}"
+.Re
+a
+.i poll
+of all constraints in the $require facet of slot in
+frame applied to the values of the slot.  Both local
+and inherited constraints are included.  If optional
+values are supplied, they are checked against the
+constraints instead.  Constraints are run in a
+Frame Environment with :frame, :slot and :facet bound.
+Moreover, :value and :values are bound as described
+in fapply-constraints.
+.sh 2 Utlity\ functions\ for\ predicates
+.pp
+The treatment of predicates has been extended to
+include an explicit falue for
+unknown, ?, as well as t or nil.
+.Lf true? "'x"
+.Re
+returns t only if x is neither nil nor ?.
+.Lf false? "'x"
+.Re
+returns t only if x is nil.
+.Lf unknown? "'x"
+.Re
+returns t only if x is ?.  The value of ? is ?.
+.sh 1 Annotating\ Data\ in\ Frames 
+.pp
+Any data item can have several comments.  Three labels 
+recognized by FRL:
+.ip \s-2IN\s0: 4
+The accompanying message is the name of the frame in which the data is stored.
+This comment is added automatically by FRL when the data is first accessed
+and by fheritage.
+.ip \s-2FINHERIT\s0: 10
+The only recognizable message is 
+.i continue.
+This tells finherit to return
+data found further along the ako
+chain appended to the data in the current frame.
+.ip \s-2TYPE\s0: 6
+Recognized by fneed as the label for a message which is a type of $if-needed
+procedure.  fneed may selectively evaluate these procedures.
+.sh 2 Comment\ Functions. 
+.pp
+These functions manipulate the comments of a datum object.
+.Lf fadd-comment "'datum 'comment"
+.Re
+returns the modified datum.
+.No
+Fadd-comment merges the comment specified by label and message into the datum.
+.Lf fcomment? "'datum 'label {'message}"
+.Re
+returns the comment in the datum which matches the label if it exists.
+.No
+The comment matches if it includes message
+among its messages.
+.sh 1 Saving\ frames\ in\ a\ file 
+.pp
+Saving the state of a frame in FRL is accomplished with either of the next two
+functions.
+.Lf fdump "'frames 'file"
+.ip \s-2OUTPUTS\s0: 9
+in file each frame in the list frames in 
+.i deframe 
+form, ready to be read back in using the ordinary Lisp reader.
+.Lf fsave "'frames 'file"
+.ip \s-2OUTPUTS\s0: 9
+in file each frame in the list frames in 
+.i fassert 
+form, ready to be read back in using the ordinary Lisp reader.
+.sh 1 Syntax\ table\ definitions.
+.No
+The characters @, %, !, &, and ? are readmacros which read the next S-expression
+and respectively expand into (atsign s-expression), (percentsign s-expression).
+(exclamation s-expression), (ampersand s-expression), & (*var* s-expression).
+Thus to get the characters @, %, !, & or ?, you
+must precede them with a slash in FRL.
+.sh 1 Global system variables.
+.pp
+The following global variables are used by FRL:
+fassert, deframe, *frames*, *new-frames*, :user, :frame, :slot,
+:facet, :value, :values, pagepause, *version*, *fgensym*, *request-prompter*,
+*debug*, verbose*.
+.sh 1 Frames\ are\ built\ out\ of\ flists 
+.pp
+The foundation of FRL consists of a few Lisp functions for manipulating 
+.i flists.
+An flist is a recursive list structure defined as follows.
+.ip \s-2Flist\s0= 7
+= (indicator . bucket).
+.ip \s-2Indicator\s0= 11
+= s-expression.
+.ip \s-2Bucket\s0= 8
+= (item item ...).  [ A bucket can be nil ]
+.ip \s-2Item\s0= 6
+= flist.
+.pp
+In FRL, flists are implemented as nested association lists.  
+An embedded ??frame can
+be identified by specifying a path of indicators.
+.sh 2 Parts\ of\ a\ flist. 
+.pp
+An flist has two parts -- an indicator and a bucket.
+.Lf findicator "'flist"
+.Re
+returns the indicator from flist.
+.Lf fbucket "'flist"
+.Re
+returns the bucket from flist.
+.Lf findicators "'flist"
+.Re
+returns a list of the indicators of the items in the bucket of flist.
+.Lf findicators! "'bucket"
+.Re
+returns a list of the indicators of the items in bucket.
+.sh 1 Retrieving\ items\ from\ an\ flist.
+.Lf flistget "'flist 'ind1 ... 'indN"
+.Re
+returns the flist whose indicator matches indN; reached by first selecting
+the item in the bucket of flist whose indicator ind1 and then reapplying
+flistget to this item (which is an flist itself) with remaining arguments
+in2 ... indN.  Thus, the indicators define a path leading deeper into the
+flists nested as items in flist.  The analogy with Lisp's get function
+is not coincidental.  Nil is returned if the path leads nowhere; i.e.,
+either the embedding is less than N or no items at that level match indN.
+.sh 1 Storing\ items\ in\ an\ flist.
+.Lf flistput "'flist 'item 'ind1 'ind2 ... 'indN"
+.Re
+returns the modified flist, after it
+adds item to the bucket pointed to (as in flistget) by the indicator
+pat ind ... indN.  If the path
+formed by ind1 ..indN does not exist in flist, one is constructed.  The
+order of flistput's arguments reflects its similarity to Lisp's function,
+but with extra indicators specifying a complete path.  If an item equal
+to item already exists in the bucket, flistput does nothing; i.e., addition
+to an flist is a merging
+operation.  Items in a bucket are always assumed to be unordered.
+.sh 1 Deleting\ items\ from\ an\ flist.
+.Lf flistdelete "'flist 'ind1 'ind2 ... 'indN"
+.Re 
+returns the modified flist, after it
+deletes the entire item accessed in flist via the indicator path ind1 ...
+indN; i.e., it will have had indN as its indicator.
+.Lf flistclear "'flist 'ind1 'ind2 ... 'indN"
+.Re
+the modified flist, after it
+returns empties the bucket under indN, but leaves the indicator.
+.Lf flistreplace "'flist 'item 'ind1 'ind2 ... 'indN"
+.Re
+Returns the modified flist, after it
+displaces all existing items in the bucket accessed in flist via
+the indicator path ind1 ... indN.  It is equivalent to an flistclear
+followed by an fputlist.
+.sh 1 Table\ of\ Data\ Retrieval\ Functions
+.pp
+Some instances of data retrieval are common enough to justify a unique name.
+A popular collection follows in tabular form, grouped according to the type of
+inheritance used to retrieve the data.  The general form for the following
+functions is:
+.nf
+.sp
+.ce
+(<function> frame slot facet).
+.sp
+.TS
+box center ;
+l | c | c | c .
+=
+Retrieval function	count	comment	evaluate
+_
+	indirect	inherit	 (returns)
+=
+*fdatum-only	ONE	NO	YES	
+	YES	NONE	indicator
+_
+*fdata-only	ALL	NO	YES
+	YES	NONE	list of indicators
+_
+*fdatum	ONE	YES	YES
+	YES	NONE	bucket
+_
+*fdata	ALL	YES	YES
+	YES	NONE	list of buckets
+_
+fdatum-only	ONE	NO	YES
+	YES	O	indicator
+_
+fdata-only	ALL	NO	YES
+	YES	O	list of indicators
+_
+fdatum	ONE	YES	YES
+	YES	O	bucket
+_
+fdata	ALL	YES	YES
+	YES	O	list of buckets
+_
+fheritage	ALL	YES	YES
+	YES	HERITAGE	list of buckets
+=
+.TE
+.sp
+.pp
+The general form of the following functions is:
+.nf
+.sp
+.ce
+(<function> frame slot).
+.sp
+.TS
+box center ;
+l | c | c | c .
+=
+Retrieval function	count	comment	evaluate
+_
+	indirect	inherit	 (returns)
+=
+*fvalue-only	ONE	NO	YES	
+	YES	NONE	indicator
+_
+*fvalues-only	ALL	NO	YES	
+	YES	NONE	list of indicators
+_
+*fvalue	ONE	YES	YES	
+	YES	NONE	bucket
+_
+*fvalues	ALL	YES	YES	
+	YES	NONE	list of buckets
+=
+fvalue-only	ONE	NO	YES	
+	YES	O	indicator
+_
+fvalues-only	ALL	NO	YES	
+	YES	O	list of indicators
+_
+fvalue	ONE	YES	YES	
+	YES	O	bucket
+_
+fvalues	ALL	YES	YES	
+	YES	O	list of buckets
+=
+fvalue-only1	ONE	NO	YES	
+	YES	1	indicator
+_
+fvalues-only1	ALL	NO	YES	
+	YES	l	list of indicators
+_
+fvalue1	ONE	YES	YES	
+	YES	1	bucket
+_
+fvalues1	ALL	YES	YES	
+	YES	1	list of buckets
+=
+fvalue-only2	ONE	NO	YES	
+	YES	2	indicator
+_
+fvalues-only2	ALL	NO	YES	
+	YES	2	list of indicator
+_
+fvalue2	ONE	YES	YES	
+	YES	2	bucket
+_
+fvalues2	ALL	YES	YES	
+	YES	2	list of buckets
+=
+.TE
+.sp
+.pp
+Some general naming rules have been oberserved. "-only" signifies that the
+comments have been stripped off. "*" denotes no inheritance.  Singular and
+plural forms distinguish functions which return a list of all data from those 
+that expect to find a single datum.
+.Lf *fdatum? "'frame 'slot 'facet"
+.Lf fheritage? "'frame 'slot 'facet"
+.Lf *fvalue? "'frame 'slot"
+.Lf fvalue? "'frame 'slot"
+.Lf fvalue1? "'frame 'slot"
+.Lf fvalue2? "'frame 'slot"
+.Re
+returns t only if data exists to be retrieved; i.e.,
+if the corresponding retrieval function (see Table) would return non-nil.  The
+predicate forms, however, do not return useable data.
+.sh 1 The\ FRL\ trace\ function
+.Lf ftrace "'type"
+.Re
+returns a list of actions currently being traced.
+.No
+Ftrace is FRL's tracer for frame actions.  It's syntax parallels Lisp's
+trace except that a predefined set of actions are traced rather than functions
+and a more limited set of options are available.  
+Traceable actions are if-added,
+if-removed, if-needed, create, destroy, and instantiate.  Options are cond,
+break, entry and exit.
+.Ex
+(ftrace if-added)
+causes trace information to be printed out before and after any $if-added
+method is executed.
+.pp
+Additional information can be specified using the entry and exit options.
+The cond option controls whether anything at all is printed.  Break breaks.
+.Ex
+.nf
+(ftrace (if-added cond (not (memo :slot '(ako instance))) 
+.ta 3i
+	break (ex :slot 'foo) entry ((individual? :frame)))) 
+.sp
+.fi
+prints the usual stuff about if-added methods run on any slots other than 
+ako and instance, breaks if an if-added method is run for the foo slot
+of a frame, and prints whether or not the frame is 
+an individual along with the entry information.
+.Lf funtrace "{'action1 'action2 ... }"
+.No
+Funtrace stops tracing entirely.
+(Funtrace action1 action2 --) stops tracing selectively.
+.bp
+.sh 1 Bibiliography
+.sp
+.ip
+Bullwinkle, C. "Levels of Complexity in Discourse," AI Memo 413, MIT, March 1977.
+.ip
+Clemenson, G. "A Birthday Party Frame System," AI Working Paper 140, MIT, February 1977.
+.ip
+Jeffery, M. "Representing PLACE in a Frame System," MS Thesis (forthcoming), MIT, 1977.
+.ip
+Goldstein, I.P. and Roberts, R.B. "NUDGE: A Knowledge-based Scheduling Program,"AI Memo 405, MIT, February 1977.
+.ip
+Minsky, M. "A Framework for Representing Knowledge," in P. H. Winston (Ed.)  The
+Psychology of Computer Vision, NY:McGraw-Hill, 1975.
+.ip
+Moon, D.A. MACLISP References Manual.  LCS, MIT, December 1975.
+.ip
+Roberts, R.B. and Goldstein, I.P. "The FRL Primer," AI Memo 408, MIT, June 1977.
+.ip
+Rosenberg, S. "Frames-based Text Processing," AI Memo 431, MIT, 1977.
+.ip
+Rosenberg, S. and Roberts, R.B. "Co-Reference in a Frame Database",IJCAI, 1979.
+.ip
+Stansfield, J. "COMEX: A Support System for a Commodities Expert," AI Memo 423,
+MIT, 1977.
+
+

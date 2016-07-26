@@ -1,0 +1,213 @@
+From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:03:33 1988
+Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
+	id AA08088; Thu, 2 Jun 88 14:03:33 JST
+Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
+	id AA04298; Thu, 2 Jun 88 13:30:29 JST
+Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
+	id AA08116; Thu, 2 Jun 88 12:45:48+0900
+Date: Thu, 2 Jun 88 12:45:48+0900
+From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
+Return-Path: <z30083>
+Message-Id: <8806020345.AA08116@tansei.cc.u-tokyo.junet>
+To: ida@aoyama.junet
+Subject: makefile.frl
+Status: RO
+
+
+#
+#		f r l
+#
+# Installation notes:
+#   * remove all lines with the word sticky (there are two). This command
+#     only exists at UCB.  If you are a superuser, you can set the sticky
+#     bit with the chmod command.
+
+# some files for frl stored in the lisp library, LLIB
+LLIB= /usr/lib/lisp
+
+MACROS= frllib/fauxfns.l 
+
+MOBJS=	frllib/fauxfns.o
+
+LIBFILES = ${LLIB}/auxfns0.l   ${LLIB}/auxfns1.l  ${LLIB}/toplevel.l \
+	   ${LLIB}/backquote.l	${LLIB}/machacks.l ${LLIB}/step.l \
+	   ${LLIB}/fix.l ${LLIB}/trace.l
+
+EXECUTIVE = Makefile doit.l init.l declar.l ldeclar.l Readme Setup \
+	dhl/ReadMe	dhl/rule.doc	dhl/domain.doc	vms.make \
+	talk/frmdoc.doc	manual/frl.n	frlpkg.l
+
+
+FRLFILES=	frl/faccess.l	frl/fask.l	frl/fassert.l	frl/fdump.l\
+		frl/fherit.l	frl/flist.l	frl/fmacro.l	frl/freq.l\
+		frl/futil.l	frl/thing.l	frl/thing1.l\
+		frl/ttyio.l	frl/raccess.l	frllib/ftop.l
+
+OILFILES=	oil/demo.l	oil/foil.l	oil/oil.l\
+		oil/olddemo.l	
+
+RULEFILES=	rule/rtemp.l	rule/rule.l	rule/sentin.l
+
+TALKFILES=	talk/frmish.l	talk/ftalk0.l	\
+		talk/pidgin.l	talk/rulish.l	
+
+#
+# other talk files not loaded in yet with talk-load
+# talk/menu.l talk/names.l	\
+# talk/say.l
+# talk/shpish.l	talk/timish.l	
+#
+
+UTILFILES=	util/cntrl.l\
+		util/ftrace.l	util/set.l	util/sutil.l\
+		util/util.l
+
+FREDFILES=	frl/fred.l
+
+DHLFILES=	dhl/rule.l	dhl/rframes.l	dhl/domain.l	dhl/satisfy.l
+
+FRLRULEFILES=	dhl/match.l  \
+		demo/tower.l	demo/btower.l	\
+		demo/atn.l	demo/oatn.l
+
+FILES = $(MACROS) $(FRLFILES) \
+	$(RULEFILES) $(UTILFILES) $(TALKFILES) $(EXECUTIVE) \
+	${DHLFILES} utils/uctolc.c utils/ltags ${FRLRULEFILES}
+# dont distribute  ${OILFILES} $(LIBFILES) 
+
+LIBOBJS = ${LLIB}/auxfns0.o ${LLIB}/auxfns1.o ${LLIB}/toplevel.o \
+	${LLIB}/machacks.o	${LLIB}/backquote.o \
+	${LLIB}/step.o 	${LLIB}/fix.o	${LLIB}/trace.o
+
+FRLOBJECTS=	frl/faccess.o	frl/fask.o	frl/fassert.o	frl/fdump.o\
+		frl/fherit.o	frl/flist.o	frl/fmacro.o	frl/freq.o\
+		frl/futil.o	frl/thing.o	frl/thing1.o\
+		frl/ttyio.o	frl/raccess.o	frllib/ftop.o
+
+OILOBJECTS=	oil/demo.o	oil/foil.o	oil/oil.o\
+		oil/olddemo.o	
+
+RULEOBJECTS=	rule/rtemp.o	rule/rule.o	rule/sentin.o
+
+TALKOBJECTS=	talk/frmish.o	talk/ftalk0.o	\
+		talk/pidgin.o	talk/rulish.o
+
+UTILOBJECTS=	util/cntrl.o\
+		util/ftrace.o	util/set.o	util/sutil.o\
+		util/util.o
+
+FREDOBJECTS=	fred.o
+
+DHLOBJECTS=	dhl/rule.o 	dhl/rframes.o	dhl/domain.o	dhl/satisfy.o
+
+FRLRULEOBJS=	dhl/match.o  \
+		demo/tower.o	demo/btower.o	\
+		demo/atn.o	demo/oatn.o
+
+OBJECTS =	$(MOBJS)	$(FRLOBJECTS)	\
+		$(UTILOBJECTS)	$(RULEOBJECTS)	${DHLOBJECTS} 
+# ${OILOBJECTS} ${LIBOBJS}
+
+ALLOBJECTS =	$(OBJECTS)	$(TALKOBJECTS)	$(FRLRULEOBJS)
+
+TMP=/usr/tmp/
+CMPLR=liszt
+LISP=lisp
+PROF= 
+.SUFFIXES: .l
+
+#
+# frl
+#
+all:	FRL ${TALKOBJECTS} ${FRLRULEOBJS}
+	@echo FRL and talkfiles compiled.
+
+dhl/match.o:	dhl/match.l	FRL
+		rm -f dhl/match.o
+		FRL dhl/match >> '#errs' 2>&1
+
+demo/tower.o:	demo/tower.l	FRL
+		rm -f dhl/tower.o
+		FRL demo/tower >> '#errs' 2>&1
+
+demo/btower.o:	demo/btower.l	FRL
+		rm -f dhl/btower.o
+		FRL demo/btower >> '#errs' 2>&1
+
+demo/atn.o:	demo/atn.l	FRL
+		rm -f demo/atn.o
+		FRL demo/atn >> '#errs' 2>&1
+
+demo/oatn.o:	demo/oatn.l	FRL
+		rm -f demo/oatn.o
+		FRL demo/oatn >> '#errs' 2>&1
+
+.l.o:
+	rm -f $*.o
+	${CMPLR} $< -mq  ${PROF} >> '#errs' 2>&1 
+
+FRL: 	$(OBJECTS) $(EXECUTIVE)
+	rm -f FRL
+	@(cat doit.l;echo "(dumplisp |FRL|)") | ${CMPLR} >> '#errs' 2>&1
+	@echo FRL is compiled.
+	
+talkobjects: $(TALKOBJECTS)
+	@echo talkobjects are compiled.
+
+
+# generate a cross reference listing of all frl files.  
+# This requires a lisp system with a large maximum size.
+xref:	
+	@echo	"lxref <lots of files>"
+	@lxref ${FILES} > xref
+
+tarbaby: 
+	tar cv ${FILES} FRL ${ALLOBJECTS}
+	@echo tar done
+
+tarfile: 
+	tar cvf - ${FILES} > tarfile
+	@echo tarfile done
+
+tarobjtape:
+	tar cv ${ALLOBJECTS} ${EXECUTIVE} FRL
+	@echo tar done
+
+movedir: 
+	tar cf - ${FILES} ${ALLOBJECTS} FRL | \
+	(cd /u0/csam/steve/rosenberg; tar xfv -)
+	@echo tar done
+
+
+${LLIB}/auxfns0.o: ${LLIB}/auxfns0.l
+	${CMPLR} ${PROF} ${LLIB}/auxfns0 > ${LLIB}/auxfns0.blat 2>&1
+
+${LLIB}/auxfns1.o: ${LLIB}/auxfns1.l
+	${CMPLR} ${PROF} ${LLIB}/auxfns1 > ${LLIB}/auxfns0.blat 2>&1
+
+${LLIB}/toplevel.o: ${LLIB}/toplevel.l
+	${CMPLR} ${PROF} ${LLIB}/toplevel > ${LLIB}/toplevel.blat 2>&1
+
+
+clean:
+	@echo removing all objects and FRL
+	@rm -f $(OBJECTS) $(TALKOBJECTS) FRL
+
+tags:	utils/uctolc $(FILES)
+	@echo making tags file
+	@awk -f utils/ltags ${FILES} | utils/uctolc | sort > tags
+	@echo tags file created
+
+utils/uctolc: utils/uctolc.c
+	cc -o utils/uctolc utils/uctolc.c
+
+filelist:
+	@echo $(FILES)
+
+echo:
+	echo ${ALLOBJECTS}
+
+atape:
+	tar crfb /dev/rmt0 20 .
+
+

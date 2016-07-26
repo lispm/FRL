@@ -1,0 +1,73 @@
+From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:03:15 1988
+Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
+	id AA08046; Thu, 2 Jun 88 14:03:14 JST
+Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
+	id AA04256; Thu, 2 Jun 88 13:30:04 JST
+Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
+	id AA08118; Thu, 2 Jun 88 12:45:49+0900
+Date: Thu, 2 Jun 88 12:45:49+0900
+From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
+Return-Path: <z30083>
+Message-Id: <8806020345.AA08118@tansei.cc.u-tokyo.junet>
+To: ida@aoyama.junet
+Subject: makelog.frl
+Status: RO
+
+
+rm -f frllib/fauxfns.o
+liszt frllib/fauxfns.l -mq   >> '#errs' 2>&1 
+rm -f frl/faccess.o
+liszt frl/faccess.l -mq   >> '#errs' 2>&1 
+rm -f frl/fask.o
+liszt frl/fask.l -mq   >> '#errs' 2>&1 
+rm -f frl/fassert.o
+liszt frl/fassert.l -mq   >> '#errs' 2>&1 
+rm -f frl/fdump.o
+liszt frl/fdump.l -mq   >> '#errs' 2>&1 
+rm -f frl/fherit.o
+liszt frl/fherit.l -mq   >> '#errs' 2>&1 
+rm -f frl/flist.o
+liszt frl/flist.l -mq   >> '#errs' 2>&1 
+rm -f frl/fmacro.o
+liszt frl/fmacro.l -mq   >> '#errs' 2>&1 
+rm -f frl/freq.o
+liszt frl/freq.l -mq   >> '#errs' 2>&1 
+rm -f frl/futil.o
+liszt frl/futil.l -mq   >> '#errs' 2>&1 
+rm -f frl/thing.o
+liszt frl/thing.l -mq   >> '#errs' 2>&1 
+rm -f frl/thing1.o
+liszt frl/thing1.l -mq   >> '#errs' 2>&1 
+rm -f frl/ttyio.o
+liszt frl/ttyio.l -mq   >> '#errs' 2>&1 
+rm -f frl/raccess.o
+liszt frl/raccess.l -mq   >> '#errs' 2>&1 
+rm -f frllib/ftop.o
+liszt frllib/ftop.l -mq   >> '#errs' 2>&1 
+rm -f util/cntrl.o
+liszt util/cntrl.l -mq   >> '#errs' 2>&1 
+rm -f util/ftrace.o
+liszt util/ftrace.l -mq   >> '#errs' 2>&1 
+rm -f util/set.o
+liszt util/set.l -mq   >> '#errs' 2>&1 
+rm -f util/sutil.o
+liszt util/sutil.l -mq   >> '#errs' 2>&1 
+rm -f util/util.o
+liszt util/util.l -mq   >> '#errs' 2>&1 
+rm -f rule/rtemp.o
+liszt rule/rtemp.l -mq   >> '#errs' 2>&1 
+rm -f rule/rule.o
+liszt rule/rule.l -mq   >> '#errs' 2>&1 
+rm -f rule/sentin.o
+liszt rule/sentin.l -mq   >> '#errs' 2>&1 
+rm -f dhl/rule.o
+liszt dhl/rule.l -mq   >> '#errs' 2>&1 
+rm -f dhl/rframes.o
+liszt dhl/rframes.l -mq   >> '#errs' 2>&1 
+rm -f dhl/domain.o
+liszt dhl/domain.l -mq   >> '#errs' 2>&1 
+rm -f dhl/satisfy.o
+liszt dhl/satisfy.l -mq   >> '#errs' 2>&1 
+rm -f FRL
+
+

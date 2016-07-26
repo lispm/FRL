@@ -1,0 +1,48 @@
+From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 13:03:29 1988
+Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
+	id AA07774; Thu, 2 Jun 88 13:03:27 JST
+Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
+	id AA03655; Thu, 2 Jun 88 12:43:30 JST
+Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
+	id AA07916; Thu, 2 Jun 88 12:43:54+0900
+Date: Thu, 2 Jun 88 12:43:54+0900
+From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
+Return-Path: <z30083@tansei.cc.u-tokyo.junet>
+Message-Id: <8806020343.AA07916@tansei.cc.u-tokyo.junet>
+To: ida@aoyama.junet
+Subject: demo
+Status: RO
+
+>From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 19:56:18 1986
+Date: Wed, 26 Feb 86 14:35:30 PST
+From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
+Message-Id: <8602262235.AA08086@franz>
+To: ida@csnet-relay.arpa
+Subject: Readme
+Status: R
+
+This file seems to contain demonstration
+programs for the FRL system.
+
+The files ending in .l can be loaded by:
+(load 'filename.l)
+The files ending in .o can be loaded by:
+(fasl 'filename)
+	i.e. they can be fast loaded.
+
+The following demos exist and how to run them:
+
+atn: a simple atn parser.
+
+(fasl 'atn)
+(show (atn '(the dog ate the food))
+
+tower: the towers of hanoi.
+
+(fasl 'tower)
+(move 'disk1 'peg3)
+(move 'disk5 'peg2)
+(show 'disk1)
+
+
+

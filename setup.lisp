@@ -1,0 +1,137 @@
+From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:03:35 1988
+Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
+	id AA08094; Thu, 2 Jun 88 14:03:34 JST
+Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
+	id AA04304; Thu, 2 Jun 88 13:30:32 JST
+Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
+	id AA08194; Thu, 2 Jun 88 12:46:47+0900
+Date: Thu, 2 Jun 88 12:46:47+0900
+From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
+Return-Path: <z30083>
+Message-Id: <8806020346.AA08194@tansei.cc.u-tokyo.junet>
+To: ida@aoyama.junet
+Subject: setup
+Status: RO
+
+>From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Sat Mar  1 06:18:31 1986
+Date: Wed, 26 Feb 86 17:07:51 PST
+From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
+Message-Id: <8602270107.AA09765@franz>
+To: ida@csnet-relay.arpa
+Subject: Setup
+Status: R
+
+To create FRL:
+
+0) For vms systems, replace Makefile with vms.make .
+	Note for vmssystems.: do make -n and see what commands take place to
+	create frl.  Sometimes these commands do not get
+	executed by the makefile (bug in eunice, and make),
+	and you have to execute them by typing them in.
+	(In our exprerience, only the last command with the file
+	    piped into lisp did not execute from the make program).
+	The Makefile for the vms version does not include how to
+	compile the match and demo files yet.
+
+1) Set the LISP and COMPLR variables in the makefile to be the system
+	franz lisp and franz liszt programs.
+	Normally this is set to lisp and liszt, respectively.
+
+2) Remove "FRL" and do the command "make".
+	Each time you move the source to frl,
+	you should remove "FRL",(the object),
+	and then redo the "make" command.
+	This will tell the system which is the main frl directory.
+	and will include it in the search path for autoloading
+	things like the talk files.
+	If you are on VMS, this will not work, and you should just
+	set the lisp variable "frl-main-dir" in the top of the file
+	frllib//top.l to the home frl directory, before remaking FRL.
+	To compile all of frl, do "make" in the csh.  This will create
+	all the lisp objects and an executable object "FRL".
+	("vmsfrl" on vms systems).
+	Delete the file "FRL" if you wish to only load objects
+	into lisp instead of using FRL as a system in itself.
+	"FRL" is an executable lisp system with all frl commands
+	in it.
+
+3) to load frl into lisp (from any directory), do 1 and 2
+	and then load the file
+	frl-main-dir/init.l (this will set up the search path
+	correctly to look for all the files in the frl-main-dir.)
+
+4) To load in the talk files, do either (talk) or (talk-load) in FRL.
+	You do not need to be in the main frl directory to do this.
+
+5) See the file dhl//ReadMe if you wish information on how to use
+	the rule interpretor.
+
+6) There is a manual section which can be added to the lisp manual,
+	files: manual/frl.n manual/framish.n manual/ext-frl.n.
+	The third of these has not been finished yet, and is not
+	prove-read yet either.  This will come later.
+
+New comments about compiling rules and files with rules and rule domain
+	frames in it.
+
+7) FRL is now loaded into liszt , not lisp, and currently to
+	compile a file with frl rules and rule-domains in it,
+	one should run frl, and in frl run the function
+	(compile-rule-file filename). Specify filename with
+	no extension (not filename.l).  This function is a
+	fexpr and is similar to running (liszt -m filename).
+	Compile-rule-file will automatically load in the binary
+	file into frl.  This binary file can be loaded in any
+	subsequent FRL also.
+
+	You can also compile files with frl rule-domains and rules
+	by running in the shell, the command:
+	% FRL filename1 filename2.
+	The extensions should not be given with the filenames (use filename
+	not filename.l).
+	This will cause frl to run the compiler in maclisp mode on
+	each of the files specified, and then exit.
+	You must be careful to load any needed files into frl before
+	compiling, and declaring macros before they are in the code.
+	This is the same as for compiling lisp files with liszt.
+
+	Note: the rule and rule-domain frames are actually created
+	at compile time, and thus all appropriate user information
+	should be around that is needed at compile time.  The basic
+	FRL world (frames and functions) exists with this version 
+	of the compiler already. 
+
+	This is how the file dhl/match.l should be compiled.
+
+	% frl dhl//match
+
+	This has been fixed in the makefile.
+
+To load and run frl on the Lisp Machine:
+
+8) Set up the file extensions for the appropriate machine
+	the file structure will be stored on in the file
+	frllib/fauxfns.l.  This is currently set up for
+	a dec 20, running tops-20 with the root directory
+	being <frl>, and then load the file frlpkg.lisp,
+	and run the function (compile-frl).  Note: the talk
+	files do not yet run on the lisp machine.
+
+Running programs from vms:
+
+On the lbl vms system (lblh), the binaries are in /uc/rosenberg/newfrl
+from VMS you say,
+>From DCL:
+$ lisp:==$drc3:[rosenberg.newfrl]lisp.exe lisp
+$ franz:==lisp -r drc3:[rosenberg.newfrl]lisp.
+$ liszt:==lisp -r drc3:[rosenberg.newfrl]liszt.
+$ vmsfrl:==lisp -r drc3:[rosenberg.newfrl]vmsfrl.
+
+>From csh:
+$ csh
+% set m=/uc/rosenberg/newfrl
+% alias lisp "$m/lisp -r $m/lisp"
+% alias liszt "$m/lisp -r $m/liszt"
+% alias frl "$m/lisp -r $m/vmsfrl"
+
+
