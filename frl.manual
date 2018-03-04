@@ -1,26 +1,3 @@
-.nf
-From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 19:58:35 1986
-Received: by u-tokyo.junet (4.12/4.9J)
-	id AA01326; Fri, 28 Feb 86 19:58:11+0900
-Received: by titan.junet (4.12/3.14)
-	id AA17408; Fri, 28 Feb 86 03:55:02 jst
-Received: by kddlabs.junet (4.12/4.7)
-	id AA03742; Fri, 28 Feb 86 02:00:23 jst
-Received: from csnet-relay.arpa by hplabs.ARPA ; Wed, 26 Feb 86 15:33:34 pst
-Received: from ucbvax.berkeley.edu by CSNET-RELAY.ARPA id a010962;
-          26 Feb 86 18:29 EST
-Received: by ucbvax.berkeley.edu (5.45/1.9)
-	id AA03481; Wed, 26 Feb 86 15:22:41 PST
-Received: by kim.berkeley.edu (5.45/1.8)
-	id AA05705; Wed, 26 Feb 86 15:22:08 PST
-Received: by franz (5.5/3.14)
-	id AA08150; Wed, 26 Feb 86 14:39:26 PST
-Date: Wed, 26 Feb 86 14:39:26 PST
-From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
-Message-Id: <8602262239.AA08150@franz>
-To: ida@csnet-relay.arpa
-Subject: frl.manual
-Status: R
 .fi
 
 .de Dt
