@@ -1,3 +1,35 @@
+
+
+Frame Representation Language
+
+
+See:
+
+* Marvin Minsky (1974): A Framework for Representing Knowledge. AIM-306, Cambridge, US: MIT.
+  https://dspace.mit.edu/handle/1721.1/6089
+* R. Bruce Roberts and Ira P. Goldstein (1977): FRL Primer, AIM-408, Cambridge, US: MIT.
+  https://dspace.mit.edu/handle/1721.1/5767
+* R. Bruce Roberts and Ira P. Goldstein (1977): FRL Manual, AIM-409, Cambridge, US: MIT.
+  https://dspace.mit.edu/handle/1721.1/5768
+
+
+From the FRL Primer (1977):
+
+The Frame Representation Language (FRL) is an experimental language
+written to explore the use of frames as a knowledge representation technique.
+The term "frame" as used in FRL was inspired by Minsky's development of frame
+theory. FRL extends the traditional Property Lisp representatipn scheme by
+allowing properties to have comments, defaults and constraints, to inherit
+information from abstract forms of the same type, and to have attached
+procedures triggered by assing or deleting values, or if a value is needed.
+
+
+The code in this repository might run in Franz Lisp and Lisp Machine Lisp.
+It probably does not run in Common Lisp.
+
+
+----
+
 frl is the frame representation language from MIT
 
 frl.n is the original version of the manual.
@@ -16,4 +48,6 @@ to fix them up even more (i.e., I only made one pass).
 
 
 -- Rob Milne	(milnbe@wpafb-afita)
+
+
 
