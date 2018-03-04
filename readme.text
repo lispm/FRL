@@ -1,0 +1,19 @@
+frl is the frame representation language from MIT
+
+frl.n is the original version of the manual.
+frl.manual is the manual for frl, with my changes
+but it has several problems.
+It has a macro .Lf which is critical to the production
+of the manual, but is not defined anywhere.
+to produce it, type:
+
+	vtroff -F nonie -me -tbl frl.manual &
+		it will send index entries to your terminal, ignore these.
+		(notice that it uses the tbl preprocessor.)
+
+I have hacked up a couple of the macros for the manuals, you are welcome
+to fix them up even more (i.e., I only made one pass).
+
+
+-- Rob Milne	(milnbe@wpafb-afita)
+

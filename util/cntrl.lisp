@@ -1,19 +1,3 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 13:03:31 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA07780; Thu, 2 Jun 88 13:03:30 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA03664; Thu, 2 Jun 88 12:43:32 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA07911; Thu, 2 Jun 88 12:43:50+0900
-Date: Thu, 2 Jun 88 12:43:50+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083@tansei.cc.u-tokyo.junet>
-Message-Id: <8806020343.AA07911@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: cntrl.lsp
-Status: RO
-
-
 #+franz
 (defmacro Macro (name args . body)
   `(defun ,name macro ,args . ,body))

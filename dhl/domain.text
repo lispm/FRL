@@ -1,26 +1,3 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 13:05:06 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA07811; Thu, 2 Jun 88 13:05:05 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA03690; Thu, 2 Jun 88 12:43:44 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA07935; Thu, 2 Jun 88 12:44:03+0900
-Date: Thu, 2 Jun 88 12:44:03+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083@tansei.cc.u-tokyo.junet>
-Message-Id: <8806020344.AA07935@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: domain.doc
-Status: RO
-
->From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Sat Mar  1 06:15:36 1986
-Date: Wed, 26 Feb 86 14:39:48 PST
-From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
-Message-Id: <8602262239.AA08159@franz>
-To: ida@csnet-relay.arpa
-Subject: domain.doc
-Status: R
-
 Description of knowledge domains and restricted access to domains.
 
 A domain can be declared by the function domain.

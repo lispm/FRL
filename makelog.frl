@@ -1,19 +1,3 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:03:15 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA08046; Thu, 2 Jun 88 14:03:14 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA04256; Thu, 2 Jun 88 13:30:04 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA08118; Thu, 2 Jun 88 12:45:49+0900
-Date: Thu, 2 Jun 88 12:45:49+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083>
-Message-Id: <8806020345.AA08118@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: makelog.frl
-Status: RO
-
-
 rm -f frllib/fauxfns.o
 liszt frllib/fauxfns.l -mq   >> '#errs' 2>&1 
 rm -f frl/faccess.o

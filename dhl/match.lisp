@@ -1,19 +1,3 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:03:23 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA08064; Thu, 2 Jun 88 14:03:22 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA04274; Thu, 2 Jun 88 13:30:14 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA08120; Thu, 2 Jun 88 12:45:49+0900
-Date: Thu, 2 Jun 88 12:45:49+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083>
-Message-Id: <8806020345.AA08120@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: match.l.frl
-Status: RO
-
-
 ;;
 ;;	A simple set of rules to define a simple match function.
 ;;

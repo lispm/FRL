@@ -1,19 +1,3 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 13:08:16 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA07892; Thu, 2 Jun 88 13:08:15 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA03775; Thu, 2 Jun 88 12:45:04 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA08091; Thu, 2 Jun 88 12:45:27+0900
-Date: Thu, 2 Jun 88 12:45:27+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083@tansei.cc.u-tokyo.junet>
-Message-Id: <8806020345.AA08091@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: ftop.l.frl
-Status: RO
-
-
 (include ldeclar)
 
 ;;

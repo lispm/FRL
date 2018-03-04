@@ -1,19 +1,4 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 13:05:09 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA07816; Thu, 2 Jun 88 13:05:08 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA03706; Thu, 2 Jun 88 12:43:55 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA07927; Thu, 2 Jun 88 12:44:00+0900
-Date: Thu, 2 Jun 88 12:44:00+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083@tansei.cc.u-tokyo.junet>
-Message-Id: <8806020344.AA07927@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: dhl.rule.doc
-Status: RO
-
->From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 20:17:54 1986
+From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 20:17:54 1986
 Date: Wed, 26 Feb 86 14:39:20 PST
 From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
 Message-Id: <8602262239.AA08148@franz>
@@ -326,7 +311,7 @@ The user can use the following FRL rule-system variable:
 
 Tue Aug 11 12:52:01 PDT 1981
 
->From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 20:18:13 1986
+From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Fri Feb 28 20:18:13 1986
 Received: by u-tokyo.junet (4.12/4.9J)
 	id AA01570; Fri, 28 Feb 86 20:18:04+0900
 Received: by titan.junet (4.12/3.14)

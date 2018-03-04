@@ -1,0 +1,25 @@
+This file seems to contain demonstration
+programs for the FRL system.
+
+The files ending in .l can be loaded by:
+(load 'filename.l)
+The files ending in .o can be loaded by:
+(fasl 'filename)
+	i.e. they can be fast loaded.
+
+The following demos exist and how to run them:
+
+atn: a simple atn parser.
+
+(fasl 'atn)
+(show (atn '(the dog ate the food))
+
+tower: the towers of hanoi.
+
+(fasl 'tower)
+(move 'disk1 'peg3)
+(move 'disk5 'peg2)
+(show 'disk1)
+
+
+

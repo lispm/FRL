@@ -1,26 +1,3 @@
->From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Sat Mar  1 06:16:55 1986
-Received: by u-tokyo.junet (4.12/4.9J)
-	id AA06515; Sat, 1 Mar 86 06:16:41+0900
-Received: by titan.junet (4.12/3.14)
-	id AA17895; Fri, 28 Feb 86 04:57:25 jst
-Received: by kddlabs.junet (4.12/4.7)
-	id AA04025; Fri, 28 Feb 86 02:21:59 jst
-Received: from csnet-relay.arpa by hplabs.ARPA ; Wed, 26 Feb 86 17:09:38 pst
-Received: from ucbvax.berkeley.edu by CSNET-RELAY.ARPA id a011513;
-          26 Feb 86 19:23 EST
-Received: by ucbvax.berkeley.edu (5.45/1.9)
-	id AA03490; Wed, 26 Feb 86 15:23:08 PST
-Received: by kim.berkeley.edu (5.45/1.8)
-	id AA05728; Wed, 26 Feb 86 15:22:50 PST
-Received: by franz (5.5/3.14)
-	id AA08211; Wed, 26 Feb 86 14:42:04 PST
-Date: Wed, 26 Feb 86 14:42:04 PST
-From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
-Message-Id: <8602262242.AA08211@franz>
-To: ida@csnet-relay.arpa
-Subject: rule.l
-Status: RO
-
 ;;;-*-Lisp-*-
 ;;:vi:set lisp ai
 (include declar)

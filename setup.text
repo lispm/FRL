@@ -1,26 +1,3 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:03:35 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA08094; Thu, 2 Jun 88 14:03:34 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA04304; Thu, 2 Jun 88 13:30:32 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA08194; Thu, 2 Jun 88 12:46:47+0900
-Date: Thu, 2 Jun 88 12:46:47+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083>
-Message-Id: <8806020346.AA08194@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: setup
-Status: RO
-
->From titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu Sat Mar  1 06:18:31 1986
-Date: Wed, 26 Feb 86 17:07:51 PST
-From: Fritz Kunze <titcca!kddlab!hplabs!franz!fkunze@kim.berkeley.edu>
-Message-Id: <8602270107.AA09765@franz>
-To: ida@csnet-relay.arpa
-Subject: Setup
-Status: R
-
 To create FRL:
 
 0) For vms systems, replace Makefile with vms.make .
@@ -121,13 +98,13 @@ Running programs from vms:
 
 On the lbl vms system (lblh), the binaries are in /uc/rosenberg/newfrl
 from VMS you say,
->From DCL:
+From DCL:
 $ lisp:==$drc3:[rosenberg.newfrl]lisp.exe lisp
 $ franz:==lisp -r drc3:[rosenberg.newfrl]lisp.
 $ liszt:==lisp -r drc3:[rosenberg.newfrl]liszt.
 $ vmsfrl:==lisp -r drc3:[rosenberg.newfrl]vmsfrl.
 
->From csh:
+From csh:
 $ csh
 % set m=/uc/rosenberg/newfrl
 % alias lisp "$m/lisp -r $m/lisp"

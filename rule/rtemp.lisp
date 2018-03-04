@@ -1,19 +1,3 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:04:55 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA08126; Thu, 2 Jun 88 14:04:54 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA04336; Thu, 2 Jun 88 13:30:53 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA08160; Thu, 2 Jun 88 12:46:20+0900
-Date: Thu, 2 Jun 88 12:46:20+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083>
-Message-Id: <8806020346.AA08160@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: rtemp.l.frl
-Status: RO
-
-
 (include declar)
 (fassert sensor-a
     (ako ($value (sensor)))

@@ -1,19 +1,3 @@
-From z30083@tansei.cc.u-tokyo.junet Thu Jun  2 14:03:18 1988
-Received: by aoyama.cc.aoyama.junet (3.2/6.3Junet-1.0)
-	id AA08052; Thu, 2 Jun 88 14:03:17 JST
-Received: by ccut.cc.u-tokyo.junet (5.51/6.3Junet-1.0/CSNET-JUNET)
-	id AA04262; Thu, 2 Jun 88 13:30:08 JST
-Received: by tansei.cc.u-tokyo.junet (4.12/6.3Junet-1.0)
-	id AA08107; Thu, 2 Jun 88 12:45:36+0900
-Date: Thu, 2 Jun 88 12:45:36+0900
-From: z30083@tansei.cc.u-tokyo.junet (Masayuki Ida)
-Return-Path: <z30083>
-Message-Id: <8806020345.AA08107@tansei.cc.u-tokyo.junet>
-To: ida@aoyama.junet
-Subject: init.l.frl
-Status: RO
-
-
 ;;
 ;;	init - this file is used to both load frl into
 ;;		lisp and to create FRL (by the file doit.l)
