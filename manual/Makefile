@@ -9,5 +9,6 @@ frl.ps: frl.n
 
 clean:
 	rm frl.bindex
+	rm frl.index
 	rm frl.ps
 	rm frl.pdf
