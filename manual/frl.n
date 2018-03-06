@@ -314,7 +314,7 @@ these values.
 .Lf ako? "'f1 'f2"
 .Re
 T only if f1 is a kind of f2.  Equivalent to (flink?
-'ako f1 f2).  Similar definitions are
+\'ako f1 f2).  Similar definitions are
 possible for any slot whose
 value is another frame.
 .No
